@@ -51,7 +51,15 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Раздаём статические файлы (HTML, CSS, JS, изображения и т.д.)
-app.use(express.static(path.join(__dirname)));
+// Но НЕ перехватываем /api маршруты
+app.use((req, res, next) => {
+    // Пропускаем /api маршруты
+    if (req.path.startsWith('/api')) {
+        return next();
+    }
+    // Остальное - статические файлы
+    express.static(path.join(__dirname))(req, res, next);
+});
 
 // Для SPA маршрутизации - отправляй index.html для всех неизвестных маршрутов
 app.get('/', (req, res) => {

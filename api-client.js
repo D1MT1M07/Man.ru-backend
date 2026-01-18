@@ -28,10 +28,13 @@ class APIClient {
         }
         
         // Для продакшена на Render
-        // ВАЖНО: обновите URL на ваш реальный Render сервис URL!
-        // Можно найти на https://dashboard.render.com -> выберите сервис -> скопируйте URL
-        const backendURL = 'https://man-ru.onrender.com';
-        console.log('Using production API URL:', backendURL);
+        // Используем текущий домен + /api
+        // Если фронтенд на https://man-ru.onrender.com, 
+        // то API будет на https://man-ru.onrender.com/api
+        const protocol = window.location.protocol; // https: или http:
+        const host = window.location.host; // man-ru.onrender.com
+        const backendURL = `${protocol}//${host}/api`;
+        console.log('🔧 Using API URL:', backendURL);
         return backendURL;
     }
 
