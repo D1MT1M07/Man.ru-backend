@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Карьера - Man.ru. Советы по развитию карьеры, собеседованиям, лидерству и профессиональному росту.">
+    <title>Карьера - Man.ru</title>
+    <link rel="stylesheet" href="modern.css">
+</head>
+<body data-category="career">
+    <!-- Header -->
+    <header class="header">
+        <div class="header__top">
+            <div class="header__container">
+                <div class="header__logo">
+                    <h1><a href="index.html" style="text-decoration: none;">Man.ru</a></h1>
+                    <div class="header__tagline">Стиль. Успех. Гармония</div>
+                </div>
+                <div class="header__search">
+                    <input type="text" placeholder="Поиск по сайту..." class="header__search-input">
+                    <button class="header__search-btn">🔍</button>
+                </div>
+                <div class="header__auth" id="authContainer">
+                    <!-- Auth button will be inserted here -->
+                </div>
+            </div>
+        </div>
+        
+        <nav class="header__nav">
+            <div class="header__container">
+                <ul class="nav__list">
+                    <li><a href="health.html" class="nav__link">❤️ Здоровье</a></li>
+                    <li><a href="fitness.html" class="nav__link">💪 Фитнес</a></li>
+                    <li><a href="career.html" class="nav__link">💼 Карьера</a></li>
+                    <li><a href="tech.html" class="nav__link">⚡ Технологии</a></li>
+                    <li><a href="style.html" class="nav__link">👔 Стиль</a></li>
+                    <li><a href="relations.html" class="nav__link">💑 Отношения</a></li>
+                    <li><a href="forum.html" class="nav__link">💬 Форум</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Category Featured Section with Background Image Placeholder -->
+    <!-- TO ADD BACKGROUND IMAGE: Replace 'INSERT YOUR CAREER CATEGORY BACKGROUND IMAGE URL HERE' -->
+    <!-- RECOMMENDED IMAGE: Business/career related image, 1200x400px or larger -->
+    <section class="featured-section" style="--bg-image: url('INSERT YOUR CAREER CATEGORY BACKGROUND IMAGE URL HERE');">
+        <h2 class="featured-title">💼 Карьера</h2>
+        <p class="featured-description">Развитие карьеры, лидерство и профессиональный рост для амбициозных мужчин</p>
+    </section>
+
+    <!-- Main Content -->
+    <main class="main-container">
+        <div class="container">
+            <div class="layout">
+                <!-- Left Column - Main Content -->
+                <div class="main-content">
+                    <!-- Page Title and Add Button -->
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                        <h2 class="section-title">Статьи о карьере</h2>
+                        <button id="addArticleBtn" style="background: #4a9eff; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: 600; font-size: 13px; transition: all 0.2s;">+ Добавить</button>
+                    </div>
+
+                    <!-- Articles Grid -->
+                    <div class="articles-grid" id="articlesGrid">
+                        <!-- Динамически заполняется -->
+                    </div>
+                </div>
+
+                <!-- Right Sidebar -->
+                <aside class="sidebar">
+                    <!-- Trending Block -->
+                    <div class="sidebar-block trending-block">
+                        <h4 class="sidebar-block__title">Тренды категории</h4>
+                        <ol class="trending-list">
+                            <li class="trending-item">
+                                <span class="trending-item__number">1</span>
+                                <a href="#" class="trending-item__link">Как получить повышение: переговоры с боссом</a>
+                            </li>
+                            <li class="trending-item">
+                                <span class="trending-item__number">2</span>
+                                <a href="#" class="trending-item__link">Успешное прохождение собеседования</a>
+                            </li>
+                            <li class="trending-item">
+                                <span class="trending-item__number">3</span>
+                                <a href="#" class="trending-item__link">Развитие лидерских качеств</a>
+                            </li>
+                            <li class="trending-item">
+                                <span class="trending-item__number">4</span>
+                                <a href="#" class="trending-item__link">Как избежать выгорания на работе</a>
+                            </li>
+                            <li class="trending-item">
+                                <span class="trending-item__number">5</span>
+                                <a href="#" class="trending-item__link">Топ-профессии 2026 года</a>
+                            </li>
+                        </ol>
+                    </div>
+
+                    <!-- About Category -->
+                    <div class="sidebar-block">
+                        <h4 class="sidebar-block__title">О категории</h4>
+                        <p style="font-size: 13px; color: #666; line-height: 1.5; margin: 0;">
+                            Раздел Карьера содержит статьи о развитии профессиональных навыков, лидерстве, поиске работы и достижении успеха в карьере.
+                        </p>
+                    </div>
+
+                    <!-- Categories Block -->
+                    <div class="sidebar-block categories-block">
+                        <h4 class="sidebar-block__title">Категории</h4>
+                        <ul class="categories-list">
+                            <li><a href="health.html">Здоровье</a></li>
+                            <li><a href="fitness.html">Фитнес</a></li>
+                            <li><a href="career.html">Карьера</a></li>
+                            <li><a href="tech.html">Технологии</a></li>
+                            <li><a href="style.html">Стиль и мода</a></li>
+                            <li><a href="relations.html">Отношения</a></li>
+                            <li><a href="forum.html">Форум</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Newsletter Block -->
+                    <div class="sidebar-block newsletter-block">
+                        <h4 class="sidebar-block__title">Подписка</h4>
+                        <p class="newsletter-block__text">Получайте советы для карьерного роста каждую неделю</p>
+                        <form class="newsletter-form">
+                            <input type="email" placeholder="Ваш email" required>
+                            <button type="submit">Подписаться</button>
+                        </form>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal for Adding Article -->
+    <div class="modal" id="addArticleModal">
+        <div class="modal__overlay"></div>
+        <div class="modal__content">
+            <button class="modal__close" id="closeModalBtn">✕</button>
+            <h2 style="margin-top: 0; margin-bottom: 20px;">Добавить новую статью</h2>
+            <form id="articleForm">
+                <div class="form-group">
+                    <label for="articleTitle">Заголовок</label>
+                    <input type="text" id="articleTitle" placeholder="Введите заголовок статьи" required>
+                </div>
+                <div class="form-group">
+                    <label for="articleDescription">Описание</label>
+                    <textarea id="articleDescription" placeholder="Введите описание статьи" rows="5" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="articleAuthor">Ваше имя (опционально)</label>
+                    <input type="text" id="articleAuthor" placeholder="Оставьте пустым, если авторизованы">
+                </div>
+                <button type="submit" style="background: #4a9eff; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold;">Опубликовать</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer__container">
+            <div class="footer__content">
+                <div class="footer__section">
+                    <h4>О сайте</h4>
+                    <ul>
+                        <li><a href="about.html">О Man.ru</a></li>
+                        <li><a href="advertise.html">Реклама</a></li>
+                        <li><a href="contacts.html">Контакты</a></li>
+                        <li><a href="career.html">Вакансии</a></li>
+                    </ul>
+                </div>
+                <div class="footer__section">
+                    <h4>Информация</h4>
+                    <ul>
+                        <li><a href="terms.html">Соглашение пользователя</a></li>
+                        <li><a href="privacy.html">Политика конфиденциальности</a></li>
+                        <li><a href="terms.html">Обработка данных</a></li>
+                        <li><a href="sitemap.html">Карта сайта</a></li>
+                    </ul>
+                </div>
+                <div class="footer__section">
+                    <h4>Социальные сети</h4>
+                    <ul>
+                        <li><a href="#">Telegram</a></li>
+                    </ul>
+                </div>
+                <div class="footer__section">
+                    <h4>Популярное</h4>
+                    <ul>
+                        <li><a href="index.html">Все статьи</a></li>
+                        <li><a href="forum.html">Форум</a></li>
+                        <li><a href="forum.html">Топ авторов</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer__bottom">
+                <p>&copy; 2026 Man.ru. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="category-script.js"></script>
+    <script src="api-client.js"></script>
+    <script src="auth-script-api.js"></script>
+    <script src="search-dropdown.js"></script>
+</body>
+</html>

@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>man.ru - Компоненты и примеры</title>
+    <link rel="stylesheet" href="modern.css">
+    <link rel="stylesheet" href="components.css">
+    <style>
+        .demo-section {
+            background: white;
+            padding: 40px 20px;
+            margin: 40px 0;
+            border-top: 3px solid #4a9eff;
+        }
+
+        .demo-section__title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a1f36;
+            margin-bottom: 20px;
+        }
+
+        .demo-section__subtitle {
+            font-size: 14px;
+            color: #999;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+
+        .demo-grid {
+            display: grid;
+            gap: 20px;
+        }
+
+        code {
+            background-color: #f8f9fa;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            color: #d63384;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header__container">
+            <div class="header__logo-nav">
+                <div class="logo">
+                    <h1 class="logo__text">man.ru</h1>
+                </div>
+            </div>
+            <nav class="navigation">
+                <ul class="navigation__list">
+                    <li class="navigation__item"><a href="index.html" class="navigation__link">← Вернуться на главную</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            <!-- SECTION 1: CAROUSEL -->
+            <section class="demo-section">
+                <h2 class="demo-section__title">1. Карусель статей</h2>
+                <p class="demo-section__subtitle">Используйте <code>.carousel</code> для горизонтального прокручиваемого списка</p>
+                
+                <div class="carousel">
+                    <div class="carousel__wrapper">
+                        <article class="carousel__item article-card">
+                            <div class="article-card__image"></div>
+                            <div class="article-card__content">
+                                <span class="article-card__category">Фитнес</span>
+                                <h3 class="article-card__title">Тренировка дома</h3>
+                            </div>
+                        </article>
+                        <article class="carousel__item article-card">
+                            <div class="article-card__image"></div>
+                            <div class="article-card__content">
+                                <span class="article-card__category">Здоровье</span>
+                                <h3 class="article-card__title">Правильное питание</h3>
+                            </div>
+                        </article>
+                        <article class="carousel__item article-card">
+                            <div class="article-card__image"></div>
+                            <div class="article-card__content">
+                                <span class="article-card__category">Карьера</span>
+                                <h3 class="article-card__title">Развитие лидерства</h3>
+                            </div>
+                        </article>
+                        <article class="carousel__item article-card">
+                            <div class="article-card__image"></div>
+                            <div class="article-card__content">
+                                <span class="article-card__category">Технологии</span>
+                                <h3 class="article-card__title">Новые гаджеты</h3>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 2: CARDS WITH BADGES -->
+            <section class="demo-section">
+                <h2 class="demo-section__title">2. Карточки с бейджами и тегами</h2>
+                <p class="demo-section__subtitle">Добавьте <code>.article-card--with-badge</code> для особых статей</p>
+                
+                <div class="grid grid--3cols">
+                    <article class="article-card article-card--with-badge">
+                        <div class="article-card__image">
+                            <span class="article-card__badge article-card__badge--hot">HOT</span>
+                        </div>
+                        <div class="article-card__content">
+                            <span class="article-card__category">Фитнес</span>
+                            <h3 class="article-card__title">Горячая тренировка</h3>
+                            <div class="article-card__tags">
+                                <span class="tag">тренировка</span>
+                                <span class="tag">мышцы</span>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="article-card article-card--with-badge">
+                        <div class="article-card__image">
+                            <span class="article-card__badge article-card__badge--featured">NEW</span>
+                        </div>
+                        <div class="article-card__content">
+                            <span class="article-card__category">Здоровье</span>
+                            <h3 class="article-card__title">Новый подход к восстановлению</h3>
+                            <div class="article-card__tags">
+                                <span class="tag">восстановление</span>
+                                <span class="tag">здоровье</span>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="article-card article-card--with-badge">
+                        <div class="article-card__image">
+                            <span class="article-card__badge">TOP</span>
+                        </div>
+                        <div class="article-card__content">
+                            <span class="article-card__category">Карьера</span>
+                            <h3 class="article-card__title">Топ-10 навыков лидера</h3>
+                            <div class="article-card__tags">
+                                <span class="tag">карьера</span>
+                                <span class="tag">лидерство</span>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </section>
+
+            <!-- SECTION 3: STATS BLOCK -->
+            <section class="demo-section">
+                <h2 class="demo-section__title">3. Блок статистики</h2>
+                <p class="demo-section__subtitle">Покажите ключевые метрики с помощью <code>.stats-block</code></p>
+                
+                <div class="stats-block">
+                    <div class="stat-item">
+                        <div class="stat-item__value">2.5M+</div>
+                        <div class="stat-item__label">Активных пользователей</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-item__value">15K+</div>
+                        <div class="stat-item__label">Статей в архиве</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-item__value">500K+</div>
+                        <div class="stat-item__label">Обсуждений на форуме</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-item__value">98%</div>
+                        <div class="stat-item__label">Удовлетворённость</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 4: TIMELINE -->
+            <section class="demo-section">
+                <h2 class="demo-section__title">4. Временная шкала (Timeline)</h2>
+                <p class="demo-section__subtitle">Хронологическое отображение событий с <code>.timeline</code></p>
+                
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-item__date">Январь 2026</div>
+                        <h3 class="timeline-item__title">Запуск man.ru в бета</h3>
+                        <p class="timeline-item__description">Премьера нового lifestyle-портала для современных мужчин с фокусом на здоровье и развитие.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-item__date">Февраль 2026</div>
+                        <h3 class="timeline-item__title">100K активных пользователей</h3>
+                        <p class="timeline-item__description">Первый месячный юбилей с впечатляющим ростом аудитории и активного взаимодействия.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-item__date">Март 2026</div>
+                        <h3 class="timeline-item__title">Интеграция с мобильным приложением</h3>
+                        <p class="timeline-item__description">Запуск нативного приложения для iOS и Android с полной синхронизацией контента.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 5: RATING COMPONENT -->
+            <section class="demo-section">
+                <h2 class="demo-section__title">5. Компонент рейтинга</h2>
+                <p class="demo-section__subtitle">Покажите оценку статей с помощью <code>.rating</code></p>
+                
+                <div style="display: grid; gap: 20px;">
+                    <div style="background: #f8f9fa; padding: 20px; border-radius: 8px;">
+                        <h4 style="margin-bottom: 12px;">Отличная статья: 5 звёзд</h4>
+                        <div class="rating">
+                            <div class="rating__stars">
+                                <span class="rating__star">⭐</span>
+                                <span class="rating__star">⭐</span>
+                                <span class="rating__star">⭐</span>
+                                <span class="rating__star">⭐</span>
+                                <span class="rating__star">⭐</span>
+                            </div>
+                            <span class="rating__value">4.9</span>
+                            <span class="rating__count">(2,847 оценок)</span>
+                        </div>
+                    </div>
+
+                    <div style="background: #f8f9fa; padding: 20px; border-radius: 8px;">
+                        <h4 style="margin-bottom: 12px;">Хорошая статья: 4 звезды</h4>
+                        <div class="rating">
+                            <div class="rating__stars">
+                                <span class="rating__star">⭐</span>
+                                <span class="rating__star">⭐</span>
+                                <span class="rating__star">⭐</span>
+                                <span class="rating__star">⭐</span>
+                                <span class="rating__star rating__star--empty">☆</span>
+                            </div>
+                            <span class="rating__value">4.2</span>
+                            <span class="rating__count">(1,543 оценок)</span>
+                        </div>
+                    </div>
+
+                    <div style="background: #f8f9fa; padding: 20px; border-radius: 8px;">
+                        <h4 style="margin-bottom: 12px;">Средняя статья: 3 звезды</h4>
+                        <div class="rating">
+                            <div class="rating__stars">
+                                <span class="rating__star">⭐</span>
+                                <span class="rating__star">⭐</span>
+                                <span class="rating__star">⭐</span>
+                                <span class="rating__star rating__star--empty">☆</span>
+                                <span class="rating__star rating__star--empty">☆</span>
+                            </div>
+                            <span class="rating__value">3.1</span>
+                            <span class="rating__count">(532 оценки)</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 6: ACCORDION -->
+            <section class="demo-section">
+                <h2 class="demo-section__title">6. Аккордеон (Accordion)</h2>
+                <p class="demo-section__subtitle">Сворачиваемые секции с <code>.accordion</code></p>
+                
+                <div class="accordion">
+                    <div class="accordion-item active">
+                        <div class="accordion-item__header">
+                            <span class="accordion-item__title">Как начать здоровый образ жизни?</span>
+                            <div class="accordion-item__toggle">+</div>
+                        </div>
+                        <div class="accordion-item__content">
+                            Начните с малого: добавьте 20 минут активности в день, пересмотрите питание и спите достаточно. Постепенное увеличение нагрузки поможет избежать травм и выгорания.
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <div class="accordion-item__header">
+                            <span class="accordion-item__title">Какие упражнения лучше всего для спины?</span>
+                            <div class="accordion-item__toggle">+</div>
+                        </div>
+                        <div class="accordion-item__content">
+                            Сосредоточьтесь на гребных упражнениях, подтягиваниях и приседаниях. Важно правильное выполнение техники и постоянство. Начните с 2-3 тренировок в неделю.
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <div class="accordion-item__header">
+                            <span class="accordion-item__title">Как совмещать работу и спорт?</span>
+                            <div class="accordion-item__toggle">+</div>
+                        </div>
+                        <div class="accordion-item__content">
+                            Запланируйте тренировки заранее, как встречи. Выбирайте удобное время (утро или вечер), начните с 30-минутных сеансов и постепенно увеличивайте время.
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 7: GRID VARIANTS -->
+            <section class="demo-section">
+                <h2 class="demo-section__title">7. Варианты сеток</h2>
+                <p class="demo-section__subtitle">Используйте <code>.grid--2cols</code>, <code>.grid--3cols</code>, <code>.grid--4cols</code></p>
+                
+                <h4 style="margin: 20px 0 15px 0; font-weight: 600;">Сетка 2 колонки (.grid--2cols)</h4>
+                <div class="grid grid--2cols">
+                    <article class="article-card">
+                        <div class="article-card__image"></div>
+                        <div class="article-card__content">
+                            <span class="article-card__category">Категория 1</span>
+                            <h3 class="article-card__title">Статья 1</h3>
+                        </div>
+                    </article>
+                    <article class="article-card">
+                        <div class="article-card__image"></div>
+                        <div class="article-card__content">
+                            <span class="article-card__category">Категория 2</span>
+                            <h3 class="article-card__title">Статья 2</h3>
+                        </div>
+                    </article>
+                </div>
+
+                <h4 style="margin: 30px 0 15px 0; font-weight: 600;">Сетка 4 колонки (.grid--4cols)</h4>
+                <div class="grid grid--4cols">
+                    <article class="article-card">
+                        <div class="article-card__image"></div>
+                        <div class="article-card__content">
+                            <span class="article-card__category">Кат 1</span>
+                            <h3 class="article-card__title">Статья</h3>
+                        </div>
+                    </article>
+                    <article class="article-card">
+                        <div class="article-card__image"></div>
+                        <div class="article-card__content">
+                            <span class="article-card__category">Кат 2</span>
+                            <h3 class="article-card__title">Статья</h3>
+                        </div>
+                    </article>
+                    <article class="article-card">
+                        <div class="article-card__image"></div>
+                        <div class="article-card__content">
+                            <span class="article-card__category">Кат 3</span>
+                            <h3 class="article-card__title">Статья</h3>
+                        </div>
+                    </article>
+                    <article class="article-card">
+                        <div class="article-card__image"></div>
+                        <div class="article-card__content">
+                            <span class="article-card__category">Кат 4</span>
+                            <h3 class="article-card__title">Статья</h3>
+                        </div>
+                    </article>
+                </div>
+            </section>
+
+            <!-- SECTION 8: CODE EXAMPLES -->
+            <section class="demo-section">
+                <h2 class="demo-section__title">8. Примеры кода</h2>
+                <p class="demo-section__subtitle">Копируйте эти примеры для добавления компонентов</p>
+                
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                    <h4 style="margin-bottom: 12px; font-weight: 600;">HTML: Базовая карточка</h4>
+                    <pre style="overflow-x: auto; padding: 12px; background: white; border-left: 3px solid #4a9eff; border-radius: 3px;"><code>&lt;article class="article-card"&gt;
+    &lt;div class="article-card__image"&gt;&lt;/div&gt;
+    &lt;div class="article-card__content"&gt;
+        &lt;span class="article-card__category"&gt;Фитнес&lt;/span&gt;
+        &lt;h3 class="article-card__title"&gt;Заголовок&lt;/h3&gt;
+        &lt;p class="article-card__description"&gt;Описание&lt;/p&gt;
+    &lt;/div&gt;
+&lt;/article&gt;</code></pre>
+                </div>
+
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                    <h4 style="margin-bottom: 12px; font-weight: 600;">CSS: Сетка 3 колонки</h4>
+                    <pre style="overflow-x: auto; padding: 12px; background: white; border-left: 3px solid #4a9eff; border-radius: 3px;"><code>&lt;div class="grid grid--3cols"&gt;
+    &lt;!-- Карточки автоматически разместятся --&gt;
+&lt;/div&gt;
+
+/* Автоматически адаптируется к размеру экрана */</code></pre>
+                </div>
+
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 8px;">
+                    <h4 style="margin-bottom: 12px; font-weight: 600;">JavaScript: Аккордеон</h4>
+                    <pre style="overflow-x: auto; padding: 12px; background: white; border-left: 3px solid #4a9eff; border-radius: 3px;"><code>document.querySelectorAll('.accordion-item__header').forEach(header => {
+    header.addEventListener('click', function() {
+        const item = this.closest('.accordion-item');
+        item.classList.toggle('active');
+    });
+});</code></pre>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer__container">
+            <div class="footer__content">
+                <div class="footer__section">
+                    <h4 class="footer__title">Компоненты</h4>
+                    <ul class="footer__list">
+                        <li><a href="#" class="footer__link">Карусель</a></li>
+                        <li><a href="#" class="footer__link">Карточки</a></li>
+                        <li><a href="#" class="footer__link">Аккордеон</a></li>
+                        <li><a href="#" class="footer__link">Статистика</a></li>
+                    </ul>
+                </div>
+                <div class="footer__section">
+                    <h4 class="footer__title">Ресурсы</h4>
+                    <ul class="footer__list">
+                        <li><a href="README.md" class="footer__link">README</a></li>
+                        <li><a href="CUSTOMIZATION.md" class="footer__link">Кастомизация</a></li>
+                        <li><a href="index.html" class="footer__link">Главная</a></li>
+                        <li><a href="#" class="footer__link">Документация</a></li>
+                    </ul>
+                </div>
+                <div class="footer__section">
+                    <h4 class="footer__title">Информация</h4>
+                    <ul class="footer__list">
+                        <li><a href="#" class="footer__link">О сайте</a></li>
+                        <li><a href="#" class="footer__link">Контакты</a></li>
+                        <li><a href="#" class="footer__link">Лицензия MIT</a></li>
+                        <li><a href="#" class="footer__link">GitHub</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer__bottom">
+                <p>&copy; 2026 man.ru Components Library</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Аккордеон
+        document.querySelectorAll('.accordion-item__header').forEach(header => {
+            header.addEventListener('click', function() {
+                const item = this.closest('.accordion-item');
+                
+                // Закрыть все остальные
+                document.querySelectorAll('.accordion-item').forEach(otherItem => {
+                    if (otherItem !== item) {
+                        otherItem.classList.remove('active');
+                    }
+                });
+                
+                // Переключить текущий
+                item.classList.toggle('active');
+            });
+        });
+
+        // Рейтинг (интерактивность)
+        document.querySelectorAll('.rating__star').forEach(star => {
+            star.addEventListener('click', function() {
+                console.log('Рейтинг:', this.textContent);
+            });
+        });
+    </script>
+</body>
+</html>

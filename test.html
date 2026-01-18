@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Тест функциональности Man.ru</title>
+    <style>
+        body { font-family: Arial; padding: 20px; line-height: 1.6; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; border-radius: 5px; }
+        .success { color: green; }
+        .error { color: red; }
+        code { background: #f4f4f4; padding: 2px 5px; border-radius: 3px; }
+        button { padding: 8px 16px; margin: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Тест функциональности man.ru</h1>
+    
+    <div class="test-section">
+        <h2>1️⃣ Проверка DataManager</h2>
+        <p id="test1" class="error">Загрузка...</p>
+        <button onclick="testDataManager()">Запустить тест</button>
+    </div>
+
+    <div class="test-section">
+        <h2>2️⃣ Проверка Renderer</h2>
+        <p id="test2" class="error">Загрузка...</p>
+        <button onclick="testRenderer()">Запустить тест</button>
+    </div>
+
+    <div class="test-section">
+        <h2>3️⃣ Проверка Modal</h2>
+        <p id="test3" class="error">Загрузка...</p>
+        <button onclick="testModal()">Запустить тест</button>
+    </div>
+
+    <div class="test-section">
+        <h2>4️⃣ Добавление тестовой статьи</h2>
+        <p id="test4"></p>
+        <button onclick="testAddArticle()">Добавить статью</button>
+    </div>
+
+    <div class="test-section">
+        <h2>5️⃣ Добавление тестового форум-поста</h2>
+        <p id="test5"></p>
+        <button onclick="testAddPost()">Добавить пост</button>
+    </div>
+
+    <div class="test-section">
+        <h2>localStorage данные:</h2>
+        <pre id="storageData" style="background: #f4f4f4; padding: 10px; border-radius: 5px; overflow-x: auto;"></pre>
+        <button onclick="showStorage()">Показать данные</button>
+        <button onclick="clearStorage()">Очистить localStorage</button>
+    </div>
+
+    <script>
+        function testDataManager() {
+            const dm = new DataManager();
+            const articles = dm.getArticles();
+            const posts = dm.getForumPosts();
+            const test1 = document.getElementById('test1');
+            
+            if (articles.length > 0 && posts.length > 0) {
+                test1.className = 'success';
+                test1.innerHTML = `✅ DataManager работает! Статей: ${articles.length}, Постов: ${posts.length}`;
+            } else {
+                test1.className = 'error';
+                test1.innerHTML = '❌ DataManager не инициализирован';
+            }
+        }
+
+        function testRenderer() {
+            const test2 = document.getElementById('test2');
+            
+            try {
+                const categoryName = Renderer.getCategoryName('fitness');
+                if (categoryName === 'Фитнес') {
+                    test2.className = 'success';
+                    test2.innerHTML = `✅ Renderer работает! Тест маппинга категорий: fitness → ${categoryName}`;
+                } else {
+                    test2.className = 'error';
+                    test2.innerHTML = `❌ Ошибка маппинга: получено "${categoryName}"`;
+                }
+            } catch(e) {
+                test2.className = 'error';
+                test2.innerHTML = `❌ Ошибка: ${e.message}`;
+            }
+        }
+
+        function testModal() {
+            const test3 = document.getElementById('test3');
+            
+            try {
+                Modal.open('addArticleModal');
+                const modal = document.getElementById('addArticleModal');
+                
+                if (modal && modal.classList.contains('active')) {
+                    test3.className = 'success';
+                    test3.innerHTML = `✅ Modal работает! Модальное окно открывается`;
+                    Modal.close('addArticleModal');
+                } else {
+                    test3.className = 'error';
+                    test3.innerHTML = '❌ Модальное окно не открывается';
+                }
+            } catch(e) {
+                test3.className = 'error';
+                test3.innerHTML = `❌ Ошибка: ${e.message}`;
+            }
+        }
+
+        function testAddArticle() {
+            const dm = new DataManager();
+            const beforeCount = dm.getArticles().length;
+            
+            const article = {
+                title: 'Тестовая статья ' + Date.now(),
+                category: 'tech',
+                description: 'Это тестовая статья для проверки функциональности',
+                author: 'Тестовый автор'
+            };
+            
+            dm.addArticle(article);
+            const afterCount = dm.getArticles().length;
+            const test4 = document.getElementById('test4');
+            
+            if (afterCount > beforeCount) {
+                test4.className = 'success';
+                test4.innerHTML = `✅ Статья добавлена! Всего статей: ${afterCount}`;
+            } else {
+                test4.className = 'error';
+                test4.innerHTML = '❌ Статья не добавилась';
+            }
+        }
+
+        function testAddPost() {
+            const dm = new DataManager();
+            const beforeCount = dm.getForumPosts().length;
+            
+            const post = {
+                title: 'Тестовый пост ' + Date.now(),
+                category: 'career',
+                message: 'Это тестовый форум-пост для проверки функциональности',
+                author: 'Тестовый пользователь'
+            };
+            
+            dm.addForumPost(post);
+            const afterCount = dm.getForumPosts().length;
+            const test5 = document.getElementById('test5');
+            
+            if (afterCount > beforeCount) {
+                test5.className = 'success';
+                test5.innerHTML = `✅ Пост добавлен! Всего постов: ${afterCount}`;
+            } else {
+                test5.className = 'error';
+                test5.innerHTML = '❌ Пост не добавился';
+            }
+        }
+
+        function showStorage() {
+            const articles = JSON.parse(localStorage.getItem('man_ru_articles') || '[]');
+            const posts = JSON.parse(localStorage.getItem('man_ru_forum_posts') || '[]');
+            
+            const data = {
+                articles_count: articles.length,
+                posts_count: posts.length,
+                articles: articles.slice(0, 2),
+                posts: posts.slice(0, 2)
+            };
+            
+            document.getElementById('storageData').textContent = JSON.stringify(data, null, 2);
+        }
+
+        function clearStorage() {
+            localStorage.removeItem('man_ru_articles');
+            localStorage.removeItem('man_ru_forum_posts');
+            document.getElementById('storageData').textContent = 'localStorage очищен';
+        }
+
+        // Инициализация при загрузке
+        window.addEventListener('load', function() {
+            testDataManager();
+            testRenderer();
+            testModal();
+        });
+    </script>
+
+    <!-- Подключаем скрипт main.ru -->
+    <script src="script.js"></script>
+</body>
+</html>

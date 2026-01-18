@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Утилита восстановления профиля - Man.ru</title>
+    <link rel="stylesheet" href="modern.css">
+    <style>
+        .recovery-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .recovery-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 6px;
+            border-left: 4px solid #4a9eff;
+        }
+        .recovery-section h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .info-row:last-child {
+            border-bottom: none;
+        }
+        .info-label {
+            font-weight: 600;
+            color: #666;
+        }
+        .info-value {
+            color: #333;
+            word-break: break-all;
+        }
+        .btn {
+            background: #4a9eff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        .btn:hover {
+            background: #2d7ed8;
+        }
+        .btn-danger {
+            background: #ff6b6b;
+        }
+        .btn-danger:hover {
+            background: #e63946;
+        }
+        .btn-success {
+            background: #4caf50;
+        }
+        .btn-success:hover {
+            background: #45a049;
+        }
+        .status-good {
+            color: #4caf50;
+            font-weight: 600;
+        }
+        .status-bad {
+            color: #ff6b6b;
+            font-weight: 600;
+        }
+        .status-warning {
+            color: #ff9800;
+            font-weight: 600;
+        }
+        .console-output {
+            background: #222;
+            color: #0f0;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 10px;
+        }
+        .user-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .user-item {
+            padding: 12px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header__container">
+            <h1>Man.ru</h1>
+            <a href="index.html" style="color: #4a9eff; text-decoration: none;">← Вернуться на главную</a>
+        </div>
+    </header>
+
+    <main class="main-container">
+        <div class="recovery-container">
+            <h1 style="text-align: center; margin-top: 0;">🔧 Утилита восстановления профиля</h1>
+            
+            <!-- Текущий пользователь -->
+            <div class="recovery-section">
+                <h3>👤 Текущий пользователь</h3>
+                <div id="currentUserInfo">
+                    <p style="color: #999;">Загрузка...</p>
+                </div>
+            </div>
+
+            <!-- Статистика -->
+            <div class="recovery-section">
+                <h3>📊 Статистика</h3>
+                <div id="statistics">
+                    <p style="color: #999;">Загрузка...</p>
+                </div>
+            </div>
+
+            <!-- Все пользователи -->
+            <div class="recovery-section">
+                <h3>👥 Все пользователи</h3>
+                <div id="usersList" class="user-list">
+                    <p style="color: #999;">Загрузка...</p>
+                </div>
+            </div>
+
+            <!-- Операции восстановления -->
+            <div class="recovery-section">
+                <h3>🔨 Операции восстановления</h3>
+                <p style="color: #666; margin-bottom: 15px;">Используйте эти функции для исправления проблем с профилями:</p>
+                <button class="btn btn-success" onclick="recoverCurrentUserProfile()">✅ Восстановить текущий профиль</button>
+                <button class="btn btn-success" onclick="recoverAllProfiles()">🔄 Восстановить все отсутствующие профили</button>
+                <button class="btn btn-success" onclick="syncUserEmails()">🔗 Синхронизировать email авторов</button>
+                <button class="btn btn-warning" onclick="window.authManager.migrateUserData()">⚙️ Выполнить миграцию данных</button>
+                <div id="operationOutput" class="console-output" style="display: none;"></div>
+            </div>
+
+            <!-- Статус проверки -->
+            <div class="recovery-section">
+                <h3>✓ Проверка целостности</h3>
+                <button class="btn" onclick="checkDataIntegrity()">🔍 Проверить данные</button>
+                <div id="integrityReport" style="margin-top: 15px;"></div>
+            </div>
+        </div>
+    </main>
+
+    <script src="auth-script.js"></script>
+    <script>
+        function showCurrentUser() {
+            const currentUser = JSON.parse(localStorage.getItem('man_ru_current_user'));
+            const container = document.getElementById('currentUserInfo');
+            
+            if (!currentUser) {
+                container.innerHTML = '<p class="status-bad">Пользователь не авторизован</p>';
+                return;
+            }
+
+            const users = JSON.parse(localStorage.getItem('man_ru_users')) || [];
+            const userInList = users.find(u => u.email === currentUser.email);
+
+            container.innerHTML = `
+                <div class="info-row">
+                    <span class="info-label">ID:</span>
+                    <span class="info-value">${currentUser.id}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Имя:</span>
+                    <span class="info-value">${currentUser.name}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Email:</span>
+                    <span class="info-value">${currentUser.email}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Аватарка:</span>
+                    <span class="info-value">${currentUser.avatar || '👤'}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Статус профиля:</span>
+                    <span class="info-value">${userInList ? '<span class="status-good">✅ Существует в БД</span>' : '<span class="status-warning">⚠️ Потерян, нужно восстановление</span>'}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Подписчиков:</span>
+                    <span class="info-value">${(currentUser.followers || []).length}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Подписок:</span>
+                    <span class="info-value">${(currentUser.following || []).length}</span>
+                </div>
+            `;
+        }
+
+        function showStatistics() {
+            const users = JSON.parse(localStorage.getItem('man_ru_users')) || [];
+            const articles = JSON.parse(localStorage.getItem('man_ru_articles')) || [];
+            const posts = JSON.parse(localStorage.getItem('man_ru_forum_posts')) || [];
+            
+            // Подсчитываем авторов без профилей
+            const authorsInArticles = new Set(articles.map(a => a.authorEmail).filter(Boolean));
+            const authorsInPosts = new Set(posts.map(p => p.authorEmail).filter(Boolean));
+            const allAuthors = new Set([...authorsInArticles, ...authorsInPosts]);
+            
+            const authorsWithoutProfiles = Array.from(allAuthors).filter(email => !users.find(u => u.email === email));
+
+            const container = document.getElementById('statistics');
+            container.innerHTML = `
+                <div class="info-row">
+                    <span class="info-label">Всего пользователей:</span>
+                    <span class="info-value">${users.length}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Статей:</span>
+                    <span class="info-value">${articles.length}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Постов на форуме:</span>
+                    <span class="info-value">${posts.length}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Уникальных авторов:</span>
+                    <span class="info-value">${allAuthors.size}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Авторов без профилей:</span>
+                    <span class="info-value">${authorsWithoutProfiles.length > 0 ? `<span class="status-warning">${authorsWithoutProfiles.length}</span>` : `<span class="status-good">0</span>`}</span>
+                </div>
+            `;
+        }
+
+        function showAllUsers() {
+            const users = JSON.parse(localStorage.getItem('man_ru_users')) || [];
+            const container = document.getElementById('usersList');
+            
+            if (users.length === 0) {
+                container.innerHTML = '<p class="status-bad">Нет пользователей в БД</p>';
+                return;
+            }
+
+            container.innerHTML = users.map(user => `
+                <div class="user-item">
+                    <strong>${user.avatar || '👤'} ${user.name}</strong>
+                    <div style="font-size: 12px; color: #666; margin-top: 4px;">
+                        📧 ${user.email}<br>
+                        🆔 ${user.id}<br>
+                        👥 Подписчиков: ${(user.followers || []).length}, Подписок: ${(user.following || []).length}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function log(message) {
+            const output = document.getElementById('operationOutput');
+            output.style.display = 'block';
+            output.innerHTML += message + '<br>';
+            output.scrollTop = output.scrollHeight;
+        }
+
+        function clearLog() {
+            document.getElementById('operationOutput').innerHTML = '';
+        }
+
+        function recoverCurrentUserProfile() {
+            clearLog();
+            log('🔍 Начинаем восстановление текущего профиля...');
+            
+            if (authManager && authManager.recoverUserProfile()) {
+                log('✅ Профиль успешно восстановлен!');
+                log('🔄 Перезагружаем страницу...');
+                setTimeout(() => location.reload(), 1000);
+            } else {
+                log('❌ Не удалось восстановить профиль');
+            }
+        }
+
+        function checkDataIntegrity() {
+            const users = JSON.parse(localStorage.getItem('man_ru_users')) || [];
+            const articles = JSON.parse(localStorage.getItem('man_ru_articles')) || [];
+            const posts = JSON.parse(localStorage.getItem('man_ru_forum_posts')) || [];
+            
+            const report = document.getElementById('integrityReport');
+            let issues = [];
+
+            // Проверяем пользователей
+            users.forEach(user => {
+                if (!user.followers) issues.push(`⚠️ Пользователь ${user.name}: отсутствует поле followers`);
+                if (!user.following) issues.push(`⚠️ Пользователь ${user.name}: отсутствует поле following`);
+                if (!user.avatar) issues.push(`⚠️ Пользователь ${user.name}: отсутствует аватарка`);
+            });
+
+            // Проверяем статьи
+            articles.forEach(article => {
+                if (!article.authorEmail) issues.push(`⚠️ Статья "${article.title}": отсутствует authorEmail`);
+            });
+
+            // Проверяем посты
+            posts.forEach(post => {
+                if (!post.authorEmail) issues.push(`⚠️ Пост "${post.title}": отсутствует authorEmail`);
+            });
+
+            if (issues.length === 0) {
+                report.innerHTML = '<p class="status-good">✅ Все данные целы и согласованы!</p>';
+            } else {
+                report.innerHTML = '<div class="status-warning">⚠️ Найдены следующие проблемы:</div>' +
+                    issues.map(issue => `<p style="margin: 5px 0; color: #ff9800;">• ${issue}</p>`).join('');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                showCurrentUser();
+                showStatistics();
+                showAllUsers();
+            }, 500);
+        });
+    </script>
+</body>
+</html>

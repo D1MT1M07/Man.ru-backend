@@ -1,0 +1,761 @@
+/**
+ * АЛЬТЕРНАТИВНЫЕ КОМПОНЕНТЫ И МАКЕТЫ
+ * man.ru Prototype - Alternate Layouts & Components
+ * 
+ * Эти примеры можно скопировать в основные файлы для расширения функциональности
+ */
+
+/* ============================================
+   1. КАРУСЕЛЬ/СЛАЙДЕР СТАТЕЙ (CSS)
+   ============================================ */
+
+.carousel {
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    margin-bottom: 40px;
+}
+
+.carousel__wrapper {
+    display: flex;
+    scroll-behavior: smooth;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 15px;
+    padding-bottom: 10px;
+}
+
+.carousel__item {
+    flex: 0 0 calc(33.333% - 10px);
+    scroll-snap-align: start;
+    min-width: 300px;
+}
+
+.carousel__button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0,0,0,0.3);
+    color: white;
+    border: none;
+    padding: 12px 16px;
+    cursor: pointer;
+    border-radius: 4px;
+    z-index: 10;
+    transition: background-color 0.3s ease;
+}
+
+.carousel__button:hover {
+    background-color: rgba(0,0,0,0.6);
+}
+
+.carousel__button--prev {
+    left: 15px;
+}
+
+.carousel__button--next {
+    right: 15px;
+}
+
+@media (max-width: 1024px) {
+    .carousel__item {
+        flex: 0 0 calc(50% - 7.5px);
+    }
+}
+
+@media (max-width: 768px) {
+    .carousel__item {
+        flex: 0 0 calc(100% - 15px);
+    }
+
+    .carousel__button {
+        display: none;
+    }
+}
+
+/* ============================================
+   2. CARD С ТЕГАМИ И БЕЙДЖАМИ
+   ============================================ */
+
+.article-card--with-badge {
+    position: relative;
+}
+
+.article-card__badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background-color: #ff4444;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    z-index: 5;
+}
+
+.article-card__badge--featured {
+    background-color: #ff6b35;
+}
+
+.article-card__badge--hot {
+    background-color: #ff4444;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+}
+
+.article-card__tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+.tag {
+    display: inline-block;
+    background-color: #f0f0f0;
+    color: #4a9eff;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.tag:hover {
+    background-color: #4a9eff;
+    color: white;
+    cursor: pointer;
+}
+
+/* ============================================
+   3. ADVANCED NEWS ITEM (С ИКОНКАМИ)
+   ============================================ */
+
+.news-item--advanced {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 20px;
+    align-items: start;
+}
+
+.news-item__icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #4a9eff, #2d7acc);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+}
+
+.news-item__right {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.news-item__time {
+    font-size: 12px;
+    color: #999;
+    white-space: nowrap;
+}
+
+/* ============================================
+   4. SIDEBAR БЛОК С КНОПКОЙ ДЕЙСТВИЯ
+   ============================================ */
+
+.sidebar-block--action {
+    display: grid;
+    grid-template-rows: auto auto 1fr auto;
+    gap: 15px;
+}
+
+.sidebar-block__icon {
+    font-size: 36px;
+    text-align: center;
+}
+
+.sidebar-block__button {
+    width: 100%;
+    padding: 12px;
+    background-color: #4a9eff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.sidebar-block__button:hover {
+    background-color: #2d7acc;
+}
+
+/* ============================================
+   5. HERO СЕКЦИЯ (FULL-WIDTH BANNER)
+   ============================================ */
+
+.hero {
+    background: linear-gradient(135deg, #1a1f36 0%, #2d3354 100%);
+    color: white;
+    padding: 80px 20px;
+    text-align: center;
+    margin-bottom: 50px;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        radial-gradient(circle at 20% 50%, rgba(74, 158, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(74, 158, 255, 0.05) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+.hero__content {
+    position: relative;
+    z-index: 1;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.hero__title {
+    font-size: 48px;
+    font-weight: 700;
+    margin-bottom: 16px;
+}
+
+.hero__subtitle {
+    font-size: 20px;
+    color: #b0b8d4;
+    margin-bottom: 32px;
+}
+
+.hero__button {
+    display: inline-block;
+    padding: 12px 32px;
+    background-color: #4a9eff;
+    color: white;
+    border-radius: 4px;
+    font-weight: 600;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hero__button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(74, 158, 255, 0.3);
+}
+
+@media (max-width: 768px) {
+    .hero {
+        padding: 50px 20px;
+    }
+
+    .hero__title {
+        font-size: 32px;
+    }
+
+    .hero__subtitle {
+        font-size: 16px;
+    }
+}
+
+/* ============================================
+   6. СТАТИСТИКА/МЕТРИКИ БЛОК
+   ============================================ */
+
+.stats-block {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 20px;
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    margin-bottom: 40px;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-item__value {
+    font-size: 32px;
+    font-weight: 700;
+    color: #4a9eff;
+    line-height: 1;
+    margin-bottom: 8px;
+}
+
+.stat-item__label {
+    font-size: 13px;
+    color: #999;
+    font-weight: 600;
+}
+
+/* ============================================
+   7. TIMELINE (ВРЕМЕННАЯ ШКАЛА)
+   ============================================ */
+
+.timeline {
+    position: relative;
+    padding-left: 30px;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background-color: #e5e5e5;
+}
+
+.timeline-item {
+    position: relative;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -36px;
+    top: 5px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: #4a9eff;
+    border: 3px solid #f8f9fa;
+}
+
+.timeline-item__date {
+    font-size: 12px;
+    color: #999;
+    font-weight: 600;
+}
+
+.timeline-item__title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #2c2c2c;
+    margin-top: 4px;
+}
+
+.timeline-item__description {
+    font-size: 13px;
+    color: #666;
+    margin-top: 6px;
+    line-height: 1.5;
+}
+
+/* ============================================
+   8. RATING/РЕЙТИНГ КОМПОНЕНТ
+   ============================================ */
+
+.rating {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+}
+
+.rating__stars {
+    display: flex;
+    gap: 2px;
+}
+
+.rating__star {
+    color: #ffc107;
+    font-size: 14px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.rating__star:hover {
+    transform: scale(1.2);
+}
+
+.rating__star--empty {
+    color: #e5e5e5;
+}
+
+.rating__value {
+    font-size: 13px;
+    font-weight: 600;
+    color: #666;
+    margin-left: 6px;
+}
+
+.rating__count {
+    font-size: 12px;
+    color: #999;
+    margin-left: 4px;
+}
+
+/* ============================================
+   9. TOGGLE/ACCORDION
+   ============================================ */
+
+.accordion {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.accordion-item {
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.accordion-item:last-child {
+    border-bottom: none;
+}
+
+.accordion-item__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    background-color: #f8f9fa;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.accordion-item__header:hover {
+    background-color: #f0f0f0;
+}
+
+.accordion-item__title {
+    font-weight: 600;
+    color: #2c2c2c;
+}
+
+.accordion-item__toggle {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #4a9eff;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+}
+
+.accordion-item.active .accordion-item__toggle {
+    transform: rotate(180deg);
+}
+
+.accordion-item__content {
+    display: none;
+    padding: 16px;
+    background-color: #fafbfc;
+    color: #666;
+    line-height: 1.6;
+}
+
+.accordion-item.active .accordion-item__content {
+    display: block;
+}
+
+/* ============================================
+   10. LOADING ANIMATION (SKELETON SCREEN)
+   ============================================ */
+
+.skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e5e5e5 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+.article-card--skeleton {
+    pointer-events: none;
+}
+
+.article-card--skeleton .article-card__image {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e5e5e5 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+}
+
+.article-card--skeleton .article-card__title {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e5e5e5 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+    height: 20px;
+    border-radius: 4px;
+    color: transparent;
+}
+
+/* ============================================
+   11. TOASTS/NOTIFICATIONS (ВЕРХНИЕ УВЕДОМЛЕНИЯ)
+   ============================================ */
+
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.toast {
+    background-color: white;
+    padding: 16px;
+    border-radius: 4px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    animation: slideIn 0.3s ease-out;
+    min-width: 300px;
+}
+
+.toast__icon {
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.toast__content {
+    flex: 1;
+}
+
+.toast__title {
+    font-weight: 600;
+    color: #2c2c2c;
+    margin-bottom: 4px;
+}
+
+.toast__message {
+    font-size: 13px;
+    color: #666;
+}
+
+.toast__close {
+    background: none;
+    border: none;
+    font-size: 18px;
+    color: #999;
+    cursor: pointer;
+    padding: 0;
+    margin-left: 8px;
+}
+
+.toast--success {
+    border-left: 4px solid #4caf50;
+}
+
+.toast--error {
+    border-left: 4px solid #f44336;
+}
+
+.toast--warning {
+    border-left: 4px solid #ff9800;
+}
+
+.toast--info {
+    border-left: 4px solid #4a9eff;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@media (max-width: 480px) {
+    .toast-container {
+        left: 10px;
+        right: 10px;
+    }
+
+    .toast {
+        min-width: auto;
+    }
+}
+
+/* ============================================
+   12. GRID COLUMN VARIANTS
+   ============================================ */
+
+.grid--2cols {
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+}
+
+.grid--4cols {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+.grid--masonry {
+    column-count: 3;
+    column-gap: 20px;
+}
+
+.grid--masonry .article-card {
+    break-inside: avoid;
+    margin-bottom: 20px;
+}
+
+@media (max-width: 1024px) {
+    .grid--4cols {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .grid--masonry {
+        column-count: 2;
+    }
+}
+
+@media (max-width: 768px) {
+    .grid--2cols,
+    .grid--4cols {
+        grid-template-columns: 1fr;
+    }
+
+    .grid--masonry {
+        column-count: 1;
+    }
+}
+
+/* ============================================
+   13. FLOATING ACTION BUTTON (FAB)
+   ============================================ */
+
+.fab {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background-color: #4a9eff;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(74, 158, 255, 0.4);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    z-index: 100;
+}
+
+.fab:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 16px rgba(74, 158, 255, 0.5);
+}
+
+.fab:active {
+    transform: scale(0.95);
+}
+
+@media (max-width: 768px) {
+    .fab {
+        bottom: 20px;
+        right: 20px;
+        width: 48px;
+        height: 48px;
+        font-size: 20px;
+    }
+}
+
+/* ============================================
+   14. STICKY SIDEBAR
+   ============================================ */
+
+.sidebar--sticky {
+    position: sticky;
+    top: 80px;
+}
+
+@media (max-width: 1024px) {
+    .sidebar--sticky {
+        position: relative;
+        top: auto;
+    }
+}
+
+/* ============================================
+   15. RESPONSIVE TABLE
+   ============================================ */
+
+.table-wrapper {
+    overflow-x: auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+}
+
+.data-table thead {
+    background-color: #f8f9fa;
+}
+
+.data-table th {
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 600;
+    color: #2c2c2c;
+    border-bottom: 2px solid #e5e5e5;
+}
+
+.data-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.data-table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+@media (max-width: 768px) {
+    .data-table {
+        font-size: 13px;
+    }
+
+    .data-table th,
+    .data-table td {
+        padding: 8px 12px;
+    }
+}
+
+/* ============================================
+   КОНЕЦ АЛЬТЕРНАТИВНЫХ КОМПОНЕНТОВ
+   ============================================ */

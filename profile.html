@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Мой профиль - Man.ru. Ваш личный кабинет с историей статей, комментариев и достижений.">
+    <title>Мой профиль - Man.ru</title>
+    <link rel="stylesheet" href="modern.css">
+    <link rel="stylesheet" href="profile.css">
+    <style>
+        .profile-header {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.8));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: 16px;
+            padding: 40px;
+            margin-bottom: 30px;
+            display: grid;
+            grid-template-columns: 180px 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+
+        .profile-avatar {
+            text-align: center;
+        }
+
+        .avatar-circle {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6366f1, #06b6d4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 80px;
+            margin-bottom: 16px;
+            box-shadow: 0 8px 32px rgba(99, 102, 241, 0.3);
+        }
+
+        .profile-info h1 {
+            font-size: 28px;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .profile-info p {
+            color: var(--text-secondary);
+            font-size: 15px;
+        }
+
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(236, 72, 153, 0.05));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            border-color: rgba(99, 102, 241, 0.4);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.15);
+        }
+
+        .stat-card__number {
+            font-size: 24px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #06b6d4, #6366f1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-card__label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 8px;
+            font-weight: 600;
+        }
+
+        .section-content {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .content-item {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.7));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .content-item:hover {
+            transform: translateY(-5px);
+            border-color: rgba(99, 102, 241, 0.2);
+            box-shadow: 0 12px 40px rgba(99, 102, 241, 0.15);
+        }
+
+        .content-item__title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        .content-item__category {
+            display: inline-block;
+            font-size: 11px;
+            color: var(--accent-color);
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .content-item__excerpt {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .content-item__meta {
+            font-size: 12px;
+            color: var(--text-secondary);
+            display: flex;
+            justify-content: space-between;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(148, 163, 184, 0.1);
+        }
+
+        .btn-delete {
+            background: transparent;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .btn-delete:hover {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: rgba(239, 68, 68, 0.5);
+        }
+
+        .profile-section {
+            margin-bottom: 50px;
+        }
+
+        .profile-section__title {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            background: linear-gradient(90deg, #06b6d4, #6366f1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 40px;
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.5), rgba(15, 23, 42, 0.5));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: 12px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state__icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .empty-state__text {
+            font-size: 15px;
+            color: var(--text-secondary);
+        }
+
+        @media (max-width: 1024px) {
+            .section-content {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .profile-header {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .profile-header {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 20px;
+            }
+
+            .profile-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .section-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header__top">
+            <div class="header__container">
+                <div class="header__logo">
+                    <h1><a href="index.html" style="text-decoration: none;">Man.ru</a></h1>
+                    <div class="header__tagline">Стиль. Успех. Гармония</div>
+                </div>
+                <div class="header__search">
+                    <input type="text" placeholder="Поиск по сайту..." class="header__search-input">
+                    <button class="header__search-btn">🔍</button>
+                </div>
+                <div class="header__auth" id="authContainer">
+                    <!-- Auth button will be inserted here -->
+                </div>
+            </div>
+        </div>
+        
+        <nav class="header__nav">
+            <div class="header__container">
+                <ul class="nav__list">
+                    <li><a href="health.html" class="nav__link">❤️ Здоровье</a></li>
+                    <li><a href="fitness.html" class="nav__link">💪 Фитнес</a></li>
+                    <li><a href="career.html" class="nav__link">💼 Карьера</a></li>
+                    <li><a href="tech.html" class="nav__link">⚡ Технологии</a></li>
+                    <li><a href="style.html" class="nav__link">👔 Стиль</a></li>
+                    <li><a href="relations.html" class="nav__link">💑 Отношения</a></li>
+                    <li><a href="forum.html" class="nav__link">💬 Форум</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-container">
+        <div class="container" style="max-width: 1200px;">
+            <!-- Check if user is logged in -->
+            <div id="notLoggedIn" style="text-align: center; padding: 60px 20px;">
+                <h2 style="font-size: 24px; margin-bottom: 16px;">Пожалуйста, войдите в аккаунт</h2>
+                <p style="color: #666; margin-bottom: 20px;">Для просмотра профиля необходимо авторизироваться</p>
+                <button id="loginBtn" style="background: #4a9eff; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: 600;">Войти</button>
+            </div>
+
+            <!-- Profile Content -->
+            <div id="profileContent" style="display: none;">
+                <!-- Profile Header -->
+                <div class="profile-header">
+                    <div class="profile-avatar">
+                        <div class="avatar-circle" id="profileAvatar">👤</div>
+                    </div>
+                    <div class="profile-info">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                            <h1 id="profileName">Имя пользователя</h1>
+                            <button id="editProfileBtn" style="background: #4a9eff; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: 600; font-size: 14px;">✏️ Редактировать</button>
+                        </div>
+                        <p id="profileEmail" style="color: #666; font-size: 14px; margin-bottom: 16px;">email@example.com</p>
+                        <p id="profileBio" style="color: #777; font-size: 14px; margin-bottom: 16px; font-style: italic;"></p>
+                        <div class="profile-stats">
+                            <div class="stat-card">
+                                <div class="stat-card__number" id="articlesCount">0</div>
+                                <div class="stat-card__label">Статей написано</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-card__number" id="postsCount">0</div>
+                                <div class="stat-card__label">Постов на форуме</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-card__number" id="subscribersCount">0</div>
+                                <div class="stat-card__label">Подписчики</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-card__number" id="followingCount">0</div>
+                                <div class="stat-card__label">Подписок</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- User's Articles -->
+                <div class="profile-section">
+                    <h2 class="profile-section__title">📝 Мои статьи</h2>
+                    <div id="userArticles" class="section-content">
+                        <!-- Статьи заполняются динамически -->
+                    </div>
+                    <div id="noArticles" class="empty-state">
+                        <div class="empty-state__icon">📭</div>
+                        <p>У вас пока нет статей. <a href="health.html" style="color: #4a9eff;">Начните писать</a></p>
+                    </div>
+                </div>
+
+                <!-- User's Forum Posts -->
+                <div class="profile-section">
+                    <h2 class="profile-section__title">💬 Мои посты на форуме</h2>
+                    <div id="userPosts" class="section-content">
+                        <!-- Посты заполняются динамически -->
+                    </div>
+                    <div id="noPosts" class="empty-state">
+                        <div class="empty-state__icon">💭</div>
+                        <p>У вас пока нет постов. <a href="forum.html" style="color: #4a9eff;">Участвуйте в обсуждениях</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer__container">
+            <div class="footer__content">
+                <div class="footer__section">
+                    <h4>О сайте</h4>
+                    <ul>
+                        <li><a href="about.html">О Man.ru</a></li>
+                        <li><a href="advertise.html">Реклама</a></li>
+                        <li><a href="contacts.html">Контакты</a></li>
+                        <li><a href="career.html">Вакансии</a></li>
+                    </ul>
+                </div>
+                <div class="footer__section">
+                    <h4>Информация</h4>
+                    <ul>
+                        <li><a href="terms.html">Соглашение пользователя</a></li>
+                        <li><a href="privacy.html">Политика конфиденциальности</a></li>
+                        <li><a href="terms.html">Обработка данных</a></li>
+                        <li><a href="sitemap.html">Карта сайта</a></li>
+                    </ul>
+                </div>
+                <div class="footer__section">
+                    <h4>Социальные сети</h4>
+                    <ul>
+                        <li><a href="#">Facebook</a></li>
+                        <li><a href="#">Instagram</a></li>
+                        <li><a href="#">Twitter</a></li>
+                        <li><a href="#">Telegram</a></li>
+                    </ul>
+                </div>
+                <div class="footer__section">
+                    <h4>Популярное</h4>
+                    <ul>
+                        <li><a href="#">Все статьи</a></li>
+                        <li><a href="#">Форум</a></li>
+                        <li><a href="#">Новости</a></li>
+                        <li><a href="#">Топ авторов</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer__bottom">
+                <p>&copy; 2026 Man.ru. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="auth-script.js"></script>
+    <script>
+        // Profile Page Logic
+        class ProfileManager {
+            constructor() {
+                this.usersKey = 'man_ru_users';
+                this.articlesKey = 'man_ru_articles';
+                this.forumPostsKey = 'man_ru_forum_posts';
+                this.currentUserKey = 'man_ru_current_user';
+                this.init();
+            }
+
+            init() {
+                this.checkUserLogin();
+                // loadProfileData будет вызван после проверки логина внутри checkUserLogin
+            }
+
+            checkUserLogin() {
+                const currentUser = JSON.parse(localStorage.getItem(this.currentUserKey));
+                const loginBtn = document.getElementById('loginBtn');
+
+                if (!currentUser) {
+                    document.getElementById('profileContent').style.display = 'none';
+                    document.getElementById('notLoggedIn').style.display = 'block';
+                    
+                    if (loginBtn) {
+                        loginBtn.addEventListener('click', () => {
+                            // Если AuthManager инициализирован, используем его modal
+                            if (window.authManager) {
+                                document.getElementById('authModal').classList.add('active');
+                                document.body.style.overflow = 'hidden';
+                            } else {
+                                // Иначе пытаемся найти modal вручную
+                                let authModal = document.getElementById('authModal');
+                                if (!authModal) {
+                                    // Создаём временный modal с минимальным функционалом
+                                    authModal = document.createElement('div');
+                                    authModal.id = 'authModal';
+                                    authModal.innerHTML = '<p>Пожалуйста, перезагрузите страницу</p>';
+                                    document.body.appendChild(authModal);
+                                }
+                                if (authModal) {
+                                    authModal.classList.add('active');
+                                    document.body.style.overflow = 'hidden';
+                                }
+                            }
+                        });
+                    }
+                } else {
+                    document.getElementById('profileContent').style.display = 'block';
+                    document.getElementById('notLoggedIn').style.display = 'none';
+                    this.displayUserInfo(currentUser);
+                    this.loadProfileData();
+                }
+            }
+
+            displayUserInfo(user) {
+                document.getElementById('profileName').textContent = user.name || 'Пользователь';
+                document.getElementById('profileEmail').textContent = user.email;
+                
+                // Обновляем joinDate только если элемент существует
+                const joinDateElement = document.getElementById('joinDate');
+                if (joinDateElement) {
+                    joinDateElement.textContent = user.registrationDate || new Date().toLocaleDateString('ru-RU');
+                }
+                
+                // Загружаем данные профиля пользователя
+                const users = JSON.parse(localStorage.getItem(this.usersKey)) || [];
+                const fullUser = users.find(u => u.email === user.email);
+                
+                if (fullUser) {
+                    const avatarElement = document.getElementById('profileAvatar');
+                    if (avatarElement && fullUser.avatar) {
+                        // Проверяем, это ли картинка (Data URL) или эмодзи
+                        if (fullUser.avatar.startsWith('data:')) {
+                            // Это изображение - отображаем как img
+                            avatarElement.style.fontSize = 'inherit';
+                            avatarElement.style.padding = '0';
+                            avatarElement.innerHTML = `<img src="${fullUser.avatar}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block;">`;
+                        } else {
+                            // Это эмодзи или текст
+                            avatarElement.innerHTML = fullUser.avatar;
+                            avatarElement.style.fontSize = '60px';
+                            avatarElement.style.padding = '';
+                        }
+                    }
+                    if (fullUser.bio) {
+                        document.getElementById('profileBio').textContent = fullUser.bio;
+                    }
+                }
+                
+                // Добавляем обработчик кнопки редактирования (добавляем только один раз)
+                const editBtn = document.getElementById('editProfileBtn');
+                if (editBtn && !editBtn.hasEventListener) {
+                    editBtn.addEventListener('click', () => this.openEditProfileModal(user));
+                    editBtn.hasEventListener = true;
+                }
+            }
+
+            loadProfileData() {
+                const currentUser = JSON.parse(localStorage.getItem(this.currentUserKey));
+                if (!currentUser) return;
+
+                const articles = JSON.parse(localStorage.getItem(this.articlesKey)) || [];
+                const posts = JSON.parse(localStorage.getItem(this.forumPostsKey)) || [];
+                const users = JSON.parse(localStorage.getItem(this.usersKey)) || [];
+
+                // Также ищем по имени, если authorEmail не установлен
+                const userArticles = articles.filter(a => 
+                    a.authorEmail === currentUser.email || a.author === currentUser.name
+                );
+                const userPosts = posts.filter(p => 
+                    p.authorEmail === currentUser.email || p.author === currentUser.name
+                );
+                
+                // Get subscriber and following counts
+                const userData = users.find(u => u.email === currentUser.email);
+                const subscribersCount = userData?.followers ? userData.followers.length : 0;
+                const followingCount = userData?.following ? userData.following.length : 0;
+
+                document.getElementById('articlesCount').textContent = userArticles.length;
+                document.getElementById('postsCount').textContent = userPosts.length;
+                document.getElementById('subscribersCount').textContent = subscribersCount;
+                document.getElementById('followingCount').textContent = followingCount;
+
+                this.displayArticles(userArticles);
+                this.displayPosts(userPosts);
+                }       
+
+            displayArticles(articles) {
+                const container = document.getElementById('userArticles');
+                const noArticles = document.getElementById('noArticles');
+                const currentUser = JSON.parse(localStorage.getItem(this.currentUserKey));
+                const users = JSON.parse(localStorage.getItem(this.usersKey)) || [];
+
+                if (articles.length === 0) {
+                    container.style.display = 'none';
+                    noArticles.style.display = 'block';
+                    return;
+                }
+
+                noArticles.style.display = 'none';
+                container.innerHTML = articles.map(article => {
+                    // Показываем кнопку удаления только если это статья текущего пользователя
+                    const isOwnArticle = currentUser && (article.authorEmail === currentUser.email || article.author === currentUser.name);
+                    const deleteButton = isOwnArticle ? 
+                        `<button class="btn-delete" onclick="profileManager.deleteArticle(${article.id})">Удалить</button>` : 
+                        '';
+                    
+                    // Получаем аватарку автора по email, если нет - по имени
+                    let author = users.find(u => u.email === article.authorEmail);
+                    if (!author) {
+                        author = users.find(u => u.name === article.author);
+                    }
+                    
+                    const authorId = author ? author.id : null;
+                    const avatar = author ? author.avatar : '👤';
+                    let avatarHTML = avatar;
+                    if (avatar && avatar.startsWith('data:')) {
+                        avatarHTML = `<img src="${avatar}" style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover;">`;
+                    } else {
+                        avatarHTML = `<span style="font-size: 18px;">${avatar}</span>`;
+                    }
+                    
+                    // Создаём кликабельный профиль автора
+                    const authorLink = authorId ? 
+                        `<a href="view-profile.html?id=${authorId}" style="cursor: pointer; color: #4a9eff; text-decoration: underline; display: flex; align-items: center; gap: 4px; transition: all 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">${avatarHTML} ${article.author}</a>` :
+                        `<span style="display: flex; align-items: center; gap: 4px;">${avatarHTML} ${article.author}</span>`;
+                    
+                    return `
+                    <div class="content-item">
+                        <div class="content-item__category">${article.category}</div>
+                        <div class="content-item__title">${article.title}</div>
+                        <p style="font-size: 12px; color: #666; margin: 8px 0;">${article.description}</p>
+                        <div class="content-item__meta">
+                            <span>${article.date}</span>
+                            ${authorLink}
+                            ${deleteButton}
+                        </div>
+                    </div>
+                `;
+                }).join('');
+            }
+
+            displayPosts(posts) {
+                const container = document.getElementById('userPosts');
+                const noPosts = document.getElementById('noPosts');
+                const currentUser = JSON.parse(localStorage.getItem(this.currentUserKey));
+                const users = JSON.parse(localStorage.getItem(this.usersKey)) || [];
+
+                if (posts.length === 0) {
+                    container.style.display = 'none';
+                    noPosts.style.display = 'block';
+                    return;
+                }
+
+                noPosts.style.display = 'none';
+                container.innerHTML = posts.map(post => {
+                    // Показываем кнопку удаления только если это пост текущего пользователя
+                    const isOwnPost = currentUser && (post.authorEmail === currentUser.email || post.author === currentUser.name);
+                    const deleteButton = isOwnPost ? 
+                        `<button class="btn-delete" onclick="profileManager.deletePost(${post.id})">Удалить</button>` : 
+                        '';
+                    
+                    // Получаем аватарку автора по email, если нет - по имени
+                    let author = users.find(u => u.email === post.authorEmail);
+                    if (!author) {
+                        author = users.find(u => u.name === post.author);
+                    }
+                    
+                    const authorId = author ? author.id : null;
+                    const avatar = author ? author.avatar : '👤';
+                    let avatarHTML = avatar;
+                    if (avatar && avatar.startsWith('data:')) {
+                        avatarHTML = `<img src="${avatar}" style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover;">`;
+                    } else {
+                        avatarHTML = `<span style="font-size: 18px;">${avatar}</span>`;
+                    }
+                    
+                    // Создаём кликабельный профиль автора
+                    const authorLink = authorId ? 
+                        `<a href="view-profile.html?id=${authorId}" style="cursor: pointer; color: #4a9eff; text-decoration: underline; display: flex; align-items: center; gap: 4px; transition: all 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">${avatarHTML} ${post.author}</a>` :
+                        `<span style="display: flex; align-items: center; gap: 4px;">${avatarHTML} ${post.author}</span>`;
+                    
+                    return `
+                    <div class="content-item">
+                        <div class="content-item__category">Форум</div>
+                        <div class="content-item__title">${post.title}</div>
+                        <p style="font-size: 12px; color: #666; margin: 8px 0;">${post.message}</p>
+                        <div class="content-item__meta">
+                            <span>${post.date}</span>
+                            ${authorLink}
+                            ${deleteButton}
+                        </div>
+                    </div>
+                `;
+                }).join('');
+            }
+
+            deleteArticle(id) {
+                const currentUser = JSON.parse(localStorage.getItem(this.currentUserKey));
+                const articles = JSON.parse(localStorage.getItem(this.articlesKey)) || [];
+                const article = articles.find(a => a.id === id);
+                
+                // Проверяем что текущий пользователь - автор этой статьи
+                if (!currentUser || !article || (article.authorEmail !== currentUser.email && article.author !== currentUser.name)) {
+                    alert('❌ Вы можете удалять только свои статьи');
+                    return;
+                }
+                
+                if (confirm('Вы уверены что хотите удалить эту статью?')) {
+                    let updatedArticles = JSON.parse(localStorage.getItem(this.articlesKey)) || [];
+                    updatedArticles = updatedArticles.filter(a => a.id !== id);
+                    localStorage.setItem(this.articlesKey, JSON.stringify(updatedArticles));
+                    this.loadProfileData();
+                    alert('✅ Статья удалена');
+                    
+                    // Обновляем статистику на главной странице
+                    if (window.indexPageManager) {
+                        window.indexPageManager.updateSiteStats();
+                    }
+                }
+            }
+
+            deletePost(id) {
+                const currentUser = JSON.parse(localStorage.getItem(this.currentUserKey));
+                const posts = JSON.parse(localStorage.getItem(this.forumPostsKey)) || [];
+                const post = posts.find(p => p.id === id);
+                
+                // Проверяем что текущий пользователь - автор этого поста
+                if (!currentUser || !post || (post.authorEmail !== currentUser.email && post.author !== currentUser.name)) {
+                    alert('❌ Вы можете удалять только свои посты');
+                    return;
+                }
+                
+                if (confirm('Вы уверены что хотите удалить этот пост?')) {
+                    let updatedPosts = JSON.parse(localStorage.getItem(this.forumPostsKey)) || [];
+                    updatedPosts = updatedPosts.filter(p => p.id !== id);
+                    localStorage.setItem(this.forumPostsKey, JSON.stringify(updatedPosts));
+                    this.loadProfileData();
+                    alert('✅ Пост удалён');
+                    
+                    // Обновляем статистику на главной странице
+                    if (window.indexPageManager) {
+                        window.indexPageManager.updateSiteStats();
+                    }
+                }
+            }
+
+            openEditProfileModal(currentUser) {
+                const users = JSON.parse(localStorage.getItem(this.usersKey)) || [];
+                const fullUser = users.find(u => u.email === currentUser.email);
+                const self = this; // Сохраняем ссылку на this для использования в обработчиках
+                const modalHTML = `
+                    <div id="editProfileModal" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 10000;">
+                        <div style="background: white; padding: 30px; border-radius: 8px; max-width: 500px; width: 90%; max-height: 90vh; overflow-y: auto;">
+                            <h2 style="margin-bottom: 20px;">✏️ Редактировать профиль</h2>
+                            
+                            <div style="margin-bottom: 15px;">
+                                <label style="display: block; margin-bottom: 5px; font-weight: 600;">Аватарка (фото или эмодзи)</label>
+                                <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 10px;">
+                                    <div id="avatarPreview" style="font-size: 40px; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; background: #f0f0f0; border-radius: 4px; overflow: hidden;">
+                                        ${fullUser?.avatar && fullUser.avatar.startsWith('data:') ? 
+                                            `<img src="${fullUser.avatar}" style="width: 100%; height: 100%; object-fit: cover;">` :
+                                            fullUser?.avatar || '👤'
+                                        }
+                                    </div>
+                                    <input type="file" id="editAvatarFile" accept="image/*" style="flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                                </div>
+                                <small style="display: block; margin-bottom: 8px; color: #999; font-size: 12px;">📸 Форматы: JPG, PNG. Размер до 500KB</small>
+                                
+                                <small style="display: block; margin-bottom: 5px; color: #666;">или выберите эмодзи:</small>
+                                <select id="editAvatar" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 16px; margin-bottom: 5px;" ${fullUser?.avatar && fullUser.avatar.startsWith('data:') ? '' : `value="${fullUser?.avatar || '👤'}"`}>
+                                    <option value="👤">👤 Профиль</option>
+                                    <option value="👨">👨 Мужчина</option>
+                                    <option value="👩">👩 Женщина</option>
+                                    <option value="🧑">🧑 Человек</option>
+                                    <option value="😊">😊 Улыбка</option>
+                                    <option value="😎">😎 Крутой</option>
+                                    <option value="🤔">🤔 Думаю</option>
+                                    <option value="🎮">🎮 Игры</option>
+                                    <option value="⚽">⚽ Спорт</option>
+                                    <option value="🏋️">🏋️ Фитнес</option>
+                                    <option value="🎸">🎸 Музыка</option>
+                                    <option value="📚">📚 Книги</option>
+                                    <option value="💻">💻 Компьютер</option>
+                                    <option value="🌍">🌍 Путешествия</option>
+                                    <option value="🍕">🍕 Еда</option>
+                                    <option value="☕">☕ Кофе</option>
+                                    <option value="🐶">🐶 Собака</option>
+                                    <option value="🐱">🐱 Кот</option>
+                                    <option value="🦁">🦁 Лев</option>
+                                    <option value="🐼">🐼 Панда</option>
+                                    <option value="🌳">🌳 Природа</option>
+                                    <option value="🌸">🌸 Цветок</option>
+                                    <option value="⛰️">⛰️ Гора</option>
+                                    <option value="💎">💎 Алмаз</option>
+                                    <option value="⭐">⭐ Звезда</option>
+                                    <option value="🔥">🔥 Огонь</option>
+                                    <option value="❤️">❤️ Сердце</option>
+                                </select>
+                                <small style="display: block; margin-top: 5px; color: #999; font-size: 12px;">или загрузите своё фото</small>
+                            </div>
+                            
+                            <div style="margin-bottom: 15px;">
+                                <label style="display: block; margin-bottom: 5px; font-weight: 600;">Никнейм</label>
+                                <input type="text" id="editName" value="${currentUser.name}" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;" placeholder="Ваше имя">
+                            </div>
+                            
+                            <div style="margin-bottom: 15px;">
+                                <label style="display: block; margin-bottom: 5px; font-weight: 600;">Дата рождения</label>
+                                <input type="date" id="editBirthDate" value="${fullUser?.birthDate || ''}" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                            </div>
+                            
+                            <div style="margin-bottom: 20px;">
+                                <label style="display: block; margin-bottom: 5px; font-weight: 600;">О себе</label>
+                                <textarea id="editBio" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; resize: vertical; min-height: 100px;" placeholder="Расскажите о себе...">${fullUser?.bio || ''}</textarea>
+                            </div>
+                            
+                            <div style="display: flex; gap: 10px;">
+                                <button id="saveProfileBtn" style="flex: 1; background: #4a9eff; color: white; border: none; padding: 12px; border-radius: 4px; cursor: pointer; font-weight: 600;">✅ Сохранить</button>
+                                <button onclick="document.getElementById('editProfileModal').remove()" style="flex: 1; background: #ddd; color: #333; border: none; padding: 12px; border-radius: 4px; cursor: pointer; font-weight: 600;">❌ Отмена</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                document.body.insertAdjacentHTML('beforeend', modalHTML);
+                
+                // Хранилище для Data URL фото
+                let uploadedPhotoDataUrl = null;
+                
+                // Обработчик изменения эмодзи
+                const emojiSelect = document.getElementById('editAvatar');
+                if (emojiSelect) {
+                    emojiSelect.addEventListener('change', (e) => {
+                        const preview = document.getElementById('avatarPreview');
+                        preview.innerHTML = e.target.value;
+                        preview.style.fontSize = '40px';
+                        uploadedPhotoDataUrl = null; // Сбрасываем загруженное фото
+                    });
+                }
+                
+                // Обработчик загрузки файла аватарки
+                const fileInput = document.getElementById('editAvatarFile');
+                if (fileInput) {
+                    fileInput.addEventListener('change', (e) => {
+                        const file = e.target.files[0];
+                        if (file) {
+                            // Проверяем размер файла (до 500KB)
+                            if (file.size > 500 * 1024) {
+                                alert('❌ Размер файла не должен превышать 500KB');
+                                return;
+                            }
+                            
+                            const reader = new FileReader();
+                            reader.onload = (event) => {
+                                uploadedPhotoDataUrl = event.target.result;
+                                const preview = document.getElementById('avatarPreview');
+                                preview.style.fontSize = 'inherit';
+                                preview.innerHTML = `<img src="${uploadedPhotoDataUrl}" style="width: 100%; height: 100%; border-radius: 4px; object-fit: cover;">`;
+                            };
+                            reader.readAsDataURL(file);
+                        }
+                    });
+                }
+                
+                // Обработчик кнопки сохранения
+                const saveBtn = document.getElementById('saveProfileBtn');
+                if (saveBtn) {
+                    saveBtn.addEventListener('click', () => {
+                        self.saveProfile(currentUser.email, uploadedPhotoDataUrl);
+                    });
+                }
+            }
+
+            updateAuthorNameEverywhere(oldName, newName, userEmail) {
+                // Обновляем имя автора во всех статьях
+                let articles = JSON.parse(localStorage.getItem(this.articlesKey)) || [];
+                articles = articles.map(article => {
+                    if ((article.authorEmail === userEmail || article.author === oldName) && article.author === oldName) {
+                        return { ...article, author: newName, authorEmail: userEmail };
+                    }
+                    return article;
+                });
+                localStorage.setItem(this.articlesKey, JSON.stringify(articles));
+
+                // Обновляем имя автора во всех постах форума
+                let posts = JSON.parse(localStorage.getItem(this.forumPostsKey)) || [];
+                posts = posts.map(post => {
+                    if ((post.authorEmail === userEmail || post.author === oldName) && post.author === oldName) {
+                        return { ...post, author: newName, authorEmail: userEmail };
+                    }
+                    return post;
+                });
+                localStorage.setItem(this.forumPostsKey, JSON.stringify(posts));
+
+                // Обновляем имя автора в комментариях к статьям
+                let comments = JSON.parse(localStorage.getItem('man_ru_article_comments')) || [];
+                comments = comments.map(comment => {
+                    if ((comment.authorEmail === userEmail || comment.author === oldName) && comment.author === oldName) {
+                        return { ...comment, author: newName, authorEmail: userEmail };
+                    }
+                    return comment;
+                });
+                localStorage.setItem('man_ru_article_comments', JSON.stringify(comments));
+
+                // Обновляем имя автора в ответах на посты форума
+                let replies = JSON.parse(localStorage.getItem('man_ru_forum_replies')) || [];
+                replies = replies.map(reply => {
+                    if ((reply.authorEmail === userEmail || reply.author === oldName) && reply.author === oldName) {
+                        return { ...reply, author: newName, authorEmail: userEmail };
+                    }
+                    return reply;
+                });
+                localStorage.setItem('man_ru_forum_replies', JSON.stringify(replies));
+            }
+
+            saveProfile(email, uploadedPhotoDataUrl = null) {
+                let avatar = uploadedPhotoDataUrl || document.getElementById('editAvatar').value || '👤';
+                const name = document.getElementById('editName').value.trim();
+                const birthDate = document.getElementById('editBirthDate').value;
+                const bio = document.getElementById('editBio').value.trim();
+                
+                if (!name) {
+                    alert('Введите никнейм');
+                    return;
+                }
+                
+                const users = JSON.parse(localStorage.getItem(this.usersKey)) || [];
+                const userIndex = users.findIndex(u => u.email === email);
+                
+                if (userIndex !== -1) {
+                    const oldName = users[userIndex].name;
+                    
+                    // Обновляем имя везде, если имя изменилось
+                    if (oldName !== name) {
+                        this.updateAuthorNameEverywhere(oldName, name, email);
+                    }
+                    
+                    users[userIndex].avatar = avatar;
+                    users[userIndex].name = name;
+                    users[userIndex].birthDate = birthDate;
+                    users[userIndex].bio = bio;
+                    
+                    localStorage.setItem(this.usersKey, JSON.stringify(users));
+                    
+                    // Обновляем текущего пользователя со всеми полями
+                    const currentUser = JSON.parse(localStorage.getItem(this.currentUserKey));
+                    currentUser.name = name;
+                    currentUser.avatar = avatar;
+                    currentUser.birthDate = birthDate;
+                    currentUser.bio = bio;
+                    currentUser.followers = users[userIndex].followers || [];
+                    currentUser.following = users[userIndex].following || [];
+                    localStorage.setItem(this.currentUserKey, JSON.stringify(currentUser));
+                    
+                    // Закрываем модальное окно
+                    const modal = document.getElementById('editProfileModal');
+                    if (modal) {
+                        modal.remove();
+                    }
+                    
+                    this.displayUserInfo(currentUser);
+                    this.loadProfileData();
+                    alert('✅ Профиль обновлён!');
+                }
+            }
+        }
+
+        const profileManager = new ProfileManager();
+        
+        // Переинициализируем при готовности DOM
+        document.addEventListener('DOMContentLoaded', () => {
+            profileManager.checkUserLogin();
+            profileManager.loadProfileData();
+        });
+    </script>
+    <script src="api-client.js"></script>
+    <script src="auth-script-api.js"></script>
+    <script src="search-dropdown.js"></script>
+</body>
+</html>

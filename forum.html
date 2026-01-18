@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Форум - Man.ru. Общение и обмен опытом с единомышленниками по всем аспектам мужского образа жизни.">
+    <title>Форум - Man.ru</title>
+    <link rel="stylesheet" href="modern.css">
+</head>
+<body data-category="forum">
+    <!-- Header -->
+    <header class="header">
+        <div class="header__top">
+            <div class="header__container">
+                <div class="header__logo">
+                    <h1><a href="index.html" style="text-decoration: none;">Man.ru</a></h1>
+                    <div class="header__tagline">Стиль. Успех. Гармония</div>
+                </div>
+                <div class="header__search">
+                    <input type="text" placeholder="Поиск по форуму..." class="header__search-input">
+                    <button class="header__search-btn">🔍</button>
+                </div>
+                <div class="header__auth" id="authContainer">
+                    <!-- Auth button will be inserted here -->
+                </div>
+            </div>
+        </div>
+        
+        <nav class="header__nav">
+            <div class="header__container">
+                <ul class="nav__list">
+                    <li><a href="health.html" class="nav__link">❤️ Здоровье</a></li>
+                    <li><a href="fitness.html" class="nav__link">💪 Фитнес</a></li>
+                    <li><a href="career.html" class="nav__link">💼 Карьера</a></li>
+                    <li><a href="tech.html" class="nav__link">⚡ Технологии</a></li>
+                    <li><a href="style.html" class="nav__link">👔 Стиль</a></li>
+                    <li><a href="relations.html" class="nav__link">💑 Отношения</a></li>
+                    <li><a href="forum.html" class="nav__link">💬 Форум</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Category Banner -->
+    <!-- BACKGROUND IMAGE PLACEHOLDER: INSERT YOUR BANNER IMAGE URL HERE -->
+    <!-- CSS CLASS: .section-title (for background-image property) -->
+    <!-- RECOMMENDED: Use background-size: cover; background-position: center; -->
+    <section style="background: #34495e; padding: 40px 20px; color: white;">
+        <div class="container">
+            <h1 style="font-size: 32px; margin: 0 0 10px 0;">💬 Форум обсуждений</h1>
+            <p style="font-size: 15px; margin: 0; opacity: 0.95;">Общение и обмен опытом с единомышленниками</p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="main-container">
+        <div class="container">
+            <div class="layout">
+                <!-- Left Column - Main Content -->
+                <div class="main-content">
+                    <!-- Page Title and Add Button -->
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                        <h2 class="section-title">Обсуждения</h2>
+                        <button id="createPostBtn" style="background: #4a9eff; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: 600; font-size: 13px; transition: all 0.2s;">+ Создать тему</button>
+                    </div>
+
+                    <!-- Top Active Users -->
+                    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; border-radius: 8px; margin-bottom: 20px; color: white;">
+                        <h3 style="margin: 0 0 15px 0; font-size: 16px;">🏆 Топ активных пользователей</h3>
+                        <div id="topUsersList" style="display: flex; flex-direction: column; gap: 10px;">
+                            <!-- Будет заполнено скриптом -->
+                        </div>
+                    </div>
+
+                    <!-- Forum Posts -->
+                    <div id="forumPostsList" style="display: flex; flex-direction: column; gap: 16px;">
+                        <!-- Динамически заполняется -->
+                    </div>
+                </div>
+
+                <!-- Right Sidebar -->
+                <aside class="sidebar">
+
+
+                    <!-- Forum Rules -->
+                    <div class="sidebar-block">
+                        <h4 class="sidebar-block__title">Правила форума</h4>
+                        <p style="font-size: 13px; color: #666; line-height: 1.5; margin: 0;">
+                            Будьте вежливы, уважайте мнение других участников, не публикуйте оскорбительный контент. Ваш вклад помогает строить сильное сообщество.
+                        </p>
+                    </div>
+
+                    <!-- Categories Block -->
+                    <div class="sidebar-block categories-block">
+                        <h4 class="sidebar-block__title">Категории</h4>
+                        <ul class="categories-list">
+                            <li><a href="health.html">Здоровье</a></li>
+                            <li><a href="fitness.html">Фитнес</a></li>
+                            <li><a href="career.html">Карьера</a></li>
+                            <li><a href="tech.html">Технологии</a></li>
+                            <li><a href="style.html">Стиль и мода</a></li>
+                            <li><a href="relations.html">Отношения</a></li>
+                            <li><a href="forum.html">Форум</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Newsletter Block -->
+                    <div class="sidebar-block newsletter-block">
+                        <h4 class="sidebar-block__title">Подписка</h4>
+                        <p class="newsletter-block__text">Получайте уведомления о новых обсуждениях</p>
+                        <form class="newsletter-form">
+                            <input type="email" placeholder="Ваш email" required>
+                            <button type="submit">Подписаться</button>
+                        </form>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer__container">
+            <div class="footer__content">
+                <div class="footer__section">
+                    <h4>О сайте</h4>
+                    <ul>
+                        <li><a href="about.html">О Man.ru</a></li>
+                        <li><a href="advertise.html">Реклама</a></li>
+                        <li><a href="contacts.html">Контакты</a></li>
+                        <li><a href="career.html">Вакансии</a></li>
+                    </ul>
+                </div>
+                <div class="footer__section">
+                    <h4>Информация</h4>
+                    <ul>
+                        <li><a href="terms.html">Соглашение пользователя</a></li>
+                        <li><a href="privacy.html">Политика конфиденциальности</a></li>
+                        <li><a href="terms.html">Обработка данных</a></li>
+                        <li><a href="sitemap.html">Карта сайта</a></li>
+                    </ul>
+                </div>
+                <div class="footer__section">
+                    <h4>Социальные сети</h4>
+                    <ul>
+                        <li><a href="#">Telegram</a></li>
+                    </ul>
+                </div>
+                <div class="footer__section">
+                    <h4>Популярное</h4>
+                    <ul>
+                        <li><a href="index.html">Все статьи</a></li>
+                        <li><a href="forum.html">Форум</a></li>
+                        <li><a href="forum.html">Топ авторов</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer__bottom">
+                <p>&copy; 2026 Man.ru. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal for Creating Forum Post -->
+    <div class="modal" id="createPostModal">
+        <div class="modal__overlay"></div>
+        <div class="modal__content">
+            <div class="modal__header">
+                <h2>Создать новую тему</h2>
+                <button id="closePostModalBtn" class="modal__close-btn">&times;</button>
+            </div>
+            <form id="createPostForm" class="forum-form">
+                <div class="form-group">
+                    <label for="postTitle">Название темы</label>
+                    <input type="text" id="postTitle" name="postTitle" required placeholder="Введите название">
+                </div>
+                
+                <div class="form-group">
+                    <label for="postCategory">Категория</label>
+                    <select id="postCategory" name="postCategory" required>
+                        <option value="health" selected>Здоровье</option>
+                        <option value="fitness">Фитнес</option>
+                        <option value="career">Карьера</option>
+                        <option value="tech">Технологии</option>
+                        <option value="style">Стиль и мода</option>
+                        <option value="relations">Отношения</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="postMessage">Содержание</label>
+                    <textarea id="postMessage" name="postMessage" required placeholder="Опишите вашу проблему или тему для обсуждения..." rows="6"></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn--primary">Создать тему</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="forum-script.js"></script>
+    <script src="api-client.js"></script>
+    <script src="auth-script-api.js"></script>
+    <script src="search-dropdown.js"></script>
+</body>
+</html>

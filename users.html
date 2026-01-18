@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Пользователи - Man.ru. Найдите и подпишитесь на интересующих вас авторов.">
+    <title>Пользователи - Man.ru</title>
+    <link rel="stylesheet" href="modern.css">
+    <style>
+        .users-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .user-card {
+            background: white;
+            border: 1px solid #bdc3c7;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+        }
+
+        .user-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+
+        .user-card__avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #3498db;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 40px;
+            margin: 0 auto 15px;
+            overflow: hidden;
+        }
+
+        .user-card__avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .user-card__name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .user-card__email {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 15px;
+        }
+
+        .user-card__stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+            padding: 10px 0;
+            border-top: 1px solid #eee;
+            border-bottom: 1px solid #eee;
+        }
+
+        .user-card__stat {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .user-card__stat-number {
+            font-size: 18px;
+            font-weight: 700;
+            color: #4a9eff;
+        }
+
+        .user-card__bio {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 15px;
+            min-height: 40px;
+        }
+
+        .user-card__button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .user-card__button--follow {
+            background: #4a9eff;
+            color: white;
+        }
+
+        .user-card__button--follow:hover {
+            background: #2d7ed8;
+        }
+
+        .user-card__button--unfollow {
+            background: #f0f0f0;
+            color: #666;
+            border: 1px solid #ddd;
+        }
+
+        .user-card__button--unfollow:hover {
+            background: #e0e0e0;
+        }
+
+        .users-search {
+            margin-bottom: 30px;
+        }
+
+        .users-search__input {
+            width: 100%;
+            max-width: 400px;
+            padding: 12px 16px;
+            border: 1px solid #bdc3c7;
+            border-radius: 4px;
+            font-size: 14px;
+            background: white;
+        }
+
+        .users-empty {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header__top">
+            <div class="header__container">
+                <div class="header__logo">
+                    <h1><a href="index.html" style="text-decoration: none;">Man.ru</a></h1>
+                    <div class="header__tagline">Стиль. Успех. Гармония</div>
+                </div>
+                <div class="header__search">
+                    <input type="text" placeholder="Поиск по сайту..." class="header__search-input">
+                    <button class="header__search-btn">🔍</button>
+                </div>
+                <div class="header__auth" id="authContainer">
+                    <!-- Auth button will be inserted here -->
+                </div>
+            </div>
+        </div>
+        
+        <nav class="header__nav">
+            <div class="header__container">
+                <ul class="nav__list">
+                    <li><a href="health.html" class="nav__link">❤️ Здоровье</a></li>
+                    <li><a href="fitness.html" class="nav__link">💪 Фитнес</a></li>
+                    <li><a href="career.html" class="nav__link">💼 Карьера</a></li>
+                    <li><a href="tech.html" class="nav__link">⚡ Технологии</a></li>
+                    <li><a href="style.html" class="nav__link">👔 Стиль</a></li>
+                    <li><a href="relations.html" class="nav__link">💑 Отношения</a></li>
+                    <li><a href="forum.html" class="nav__link">💬 Форум</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Category Banner -->
+    <section style="background: #2c3e50; padding: 40px 20px; color: white;">
+        <div class="container">
+            <h1 style="font-size: 32px; margin: 0 0 10px 0;">👥 Пользователи</h1>
+            <p style="font-size: 15px; margin: 0; opacity: 0.95;">Найдите и подпишитесь на интересующих вас авторов</p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="main-container">
+        <div class="container">
+            <div class="layout">
+                <!-- Left Column - Main Content -->
+                <div class="main-content">
+                    <!-- Search -->
+                    <div class="users-search">
+                        <input type="text" id="usersSearchInput" class="users-search__input" placeholder="Поиск по имени пользователя или email...">
+                    </div>
+
+                    <!-- Users Grid -->
+                    <div class="users-grid" id="usersGrid">
+                        <!-- Пользователи будут загружены здесь -->
+                    </div>
+
+                    <!-- Empty State -->
+                    <div id="usersEmpty" class="users-empty" style="display: none;">
+                        <p>Пользователи не найдены</p>
+                    </div>
+                </div>
+
+                <!-- Right Sidebar -->
+                <aside class="sidebar">
+                    <!-- Stats Block -->
+                    <div class="sidebar-block">
+                        <h4 class="sidebar-block__title">📊 Статистика</h4>
+                        <div style="display: grid; gap: 12px;">
+                            <div style="padding: 12px; background: #f5f5f5; border-radius: 4px;">
+                                <div style="font-size: 12px; color: #999;">Всего пользователей</div>
+                                <div style="font-size: 20px; font-weight: 700; color: #4a9eff;" id="totalUsersCount">0</div>
+                            </div>
+                            <div style="padding: 12px; background: #f5f5f5; border-radius: 4px;">
+                                <div style="font-size: 12px; color: #999;">Ваши подписки</div>
+                                <div style="font-size: 20px; font-weight: 700; color: #4a9eff;" id="yourFollowingCount">0</div>
+                            </div>
+                            <div style="padding: 12px; background: #f5f5f5; border-radius: 4px;">
+                                <div style="font-size: 12px; color: #999;">Ваши подписчики</div>
+                                <div style="font-size: 20px; font-weight: 700; color: #4a9eff;" id="yourSubscribersCount">0</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Categories Block -->
+                    <div class="sidebar-block categories-block">
+                        <h4 class="sidebar-block__title">Категории</h4>
+                        <ul class="categories-list">
+                            <li><a href="health.html">Здоровье</a></li>
+                            <li><a href="fitness.html">Фитнес</a></li>
+                            <li><a href="career.html">Карьера</a></li>
+                            <li><a href="tech.html">Технологии</a></li>
+                            <li><a href="style.html">Стиль и мода</a></li>
+                            <li><a href="relations.html">Отношения</a></li>
+                            <li><a href="forum.html">Форум</a></li>
+                        </ul>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer__container">
+            <div class="footer__content">
+                <div class="footer__section">
+                    <h4>О сайте</h4>
+                    <ul>
+                        <li><a href="about.html">О Man.ru</a></li>
+                        <li><a href="advertise.html">Реклама</a></li>
+                        <li><a href="contacts.html">Контакты</a></li>
+                        <li><a href="career.html">Вакансии</a></li>
+                    </ul>
+                </div>
+                <div class="footer__section">
+                    <h4>Информация</h4>
+                    <ul>
+                        <li><a href="terms.html">Соглашение пользователя</a></li>
+                        <li><a href="privacy.html">Политика конфиденциальности</a></li>
+                        <li><a href="terms.html">Обработка данных</a></li>
+                        <li><a href="sitemap.html">Карта сайта</a></li>
+                    </ul>
+                </div>
+                <div class="footer__section">
+                    <h4>Социальные сети</h4>
+                    <ul>
+                        <li><a href="#">Facebook</a></li>
+                        <li><a href="#">Instagram</a></li>
+                        <li><a href="#">Twitter</a></li>
+                        <li><a href="#">Telegram</a></li>
+                    </ul>
+                </div>
+                <div class="footer__section">
+                    <h4>Популярное</h4>
+                    <ul>
+                        <li><a href="#">Все статьи</a></li>
+                        <li><a href="#">Форум</a></li>
+                        <li><a href="#">Новости</a></li>
+                        <li><a href="#">Топ авторов</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer__bottom">
+                <p>&copy; 2026 Man.ru. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="auth-script.js"></script>
+    <script src="search-script.js"></script>
+    <script>
+        class UsersPageManager {
+            constructor() {
+                this.usersKey = 'man_ru_users';
+                this.currentUserKey = 'man_ru_current_user';
+                this.init();
+            }
+
+            init() {
+                this.loadUsers();
+                this.setupSearch();
+                this.updateStats();
+                
+                // Listen for subscribe events
+                window.addEventListener('subscribersUpdated', () => {
+                    this.loadUsers();
+                    this.updateStats();
+                });
+            }
+
+            loadUsers() {
+                const users = JSON.parse(localStorage.getItem(this.usersKey)) || [];
+                const currentUser = JSON.parse(localStorage.getItem(this.currentUserKey));
+                const grid = document.getElementById('usersGrid');
+                const empty = document.getElementById('usersEmpty');
+
+                if (users.length === 0) {
+                    grid.style.display = 'none';
+                    empty.style.display = 'block';
+                    return;
+                }
+
+                // Filter out current user
+                const otherUsers = users.filter(u => !currentUser || u.id !== currentUser.id);
+
+                if (otherUsers.length === 0) {
+                    grid.style.display = 'none';
+                    empty.style.display = 'block';
+                    return;
+                }
+
+                grid.style.display = 'grid';
+                empty.style.display = 'none';
+
+                grid.innerHTML = otherUsers.map(user => {
+                    const avatar = user.avatar || '👤';
+                    let avatarHTML = avatar;
+                    if (avatar && avatar.startsWith('data:')) {
+                        avatarHTML = `<img src="${avatar}">`;
+                    } else {
+                        avatarHTML = avatar;
+                    }
+
+                    const articlesCount = user.articles ? user.articles.length : 0;
+                    const subscribersCount = user.followers ? user.followers.length : 0;
+                    const isFollowing = currentUser && authManager ? authManager.isFollowing(user.id) : false;
+                    const buttonText = isFollowing ? '✓ Вы подписаны' : 'Подписаться';
+                    const buttonClass = isFollowing ? 'user-card__button--unfollow' : 'user-card__button--follow';
+                    const bio = user.bio || 'Нет биографии';
+
+                    return `
+                        <div class="user-card">
+                            <div class="user-card__avatar">${avatarHTML}</div>
+                            <div class="user-card__name">${user.name}</div>
+                            <div class="user-card__email">${user.email}</div>
+                            <div class="user-card__stats">
+                                <div class="user-card__stat">
+                                    <div class="user-card__stat-number">${articlesCount}</div>
+                                    <div>Статей</div>
+                                </div>
+                                <div class="user-card__stat">
+                                    <div class="user-card__stat-number">${subscribersCount}</div>
+                                    <div>Подписчиков</div>
+                                </div>
+                            </div>
+                            <div class="user-card__bio">${bio}</div>
+                            <div style="display: flex; gap: 8px; flex-direction: column;">
+                                <a href="view-profile.html?id=${user.id}" style="display: block; text-align: center; padding: 10px; background: #f0f0f0; color: #333; border: 1px solid #ddd; border-radius: 4px; text-decoration: none; font-weight: 600; transition: all 0.2s; cursor: pointer;">👁️ Профиль</a>
+                                ${currentUser ? 
+                                    `<button class="user-card__button ${buttonClass}" onclick="usersPageManager.toggleSubscribe('${user.id}')">${buttonText}</button>` :
+                                    `<p style="color: #999; font-size: 12px;">Авторизуйтесь для подписки</p>`
+                                }
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            setupSearch() {
+                const searchInput = document.getElementById('usersSearchInput');
+                searchInput.addEventListener('input', (e) => {
+                    const query = e.target.value.toLowerCase();
+                    const users = JSON.parse(localStorage.getItem(this.usersKey)) || [];
+                    const currentUser = JSON.parse(localStorage.getItem(this.currentUserKey));
+                    
+                    const filtered = users.filter(u => 
+                        (!currentUser || u.id !== currentUser.id) && (
+                            u.name.toLowerCase().includes(query) ||
+                            u.email.toLowerCase().includes(query)
+                        )
+                    );
+
+                    const grid = document.getElementById('usersGrid');
+                    const empty = document.getElementById('usersEmpty');
+
+                    if (filtered.length === 0) {
+                        grid.style.display = 'none';
+                        empty.style.display = 'block';
+                        return;
+                    }
+
+                    grid.style.display = 'grid';
+                    empty.style.display = 'none';
+
+                    grid.innerHTML = filtered.map(user => {
+                        const avatar = user.avatar || '👤';
+                        let avatarHTML = avatar;
+                        if (avatar && avatar.startsWith('data:')) {
+                            avatarHTML = `<img src="${avatar}">`;
+                        } else {
+                            avatarHTML = avatar;
+                        }
+
+                        const articlesCount = user.articles ? user.articles.length : 0;
+                        const subscribersCount = user.followers ? user.followers.length : 0;
+                        const isFollowing = currentUser && authManager ? authManager.isFollowing(user.id) : false;
+                        const buttonText = isFollowing ? '✓ Вы подписаны' : 'Подписаться';
+                        const buttonClass = isFollowing ? 'user-card__button--unfollow' : 'user-card__button--follow';
+                        const bio = user.bio || 'Нет биографии';
+
+                        return `
+                            <div class="user-card">
+                                <div class="user-card__avatar">${avatarHTML}</div>
+                                <div class="user-card__name">${user.name}</div>
+                                <div class="user-card__email">${user.email}</div>
+                                <div class="user-card__stats">
+                                    <div class="user-card__stat">
+                                        <div class="user-card__stat-number">${articlesCount}</div>
+                                        <div>Статей</div>
+                                    </div>
+                                    <div class="user-card__stat">
+                                        <div class="user-card__stat-number">${subscribersCount}</div>
+                                        <div>Подписчиков</div>
+                                    </div>
+                                </div>
+                                <div class="user-card__bio">${bio}</div>
+                                <div style="display: flex; gap: 8px; flex-direction: column;">
+                                    <a href="view-profile.html?id=${user.id}" style="display: block; text-align: center; padding: 10px; background: #f0f0f0; color: #333; border: 1px solid #ddd; border-radius: 4px; text-decoration: none; font-weight: 600; transition: all 0.2s; cursor: pointer;">👁️ Профиль</a>
+                                    ${currentUser ? 
+                                        `<button class="user-card__button ${buttonClass}" onclick="usersPageManager.toggleSubscribe('${user.id}')">${buttonText}</button>` :
+                                        `<p style="color: #999; font-size: 12px;">Авторизуйтесь для подписки</p>`
+                                    }
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                });
+            }
+
+            toggleSubscribe(userId) {
+                if (authManager) {
+                    authManager.subscribeToUser(userId);
+                    this.loadUsers();
+                    this.updateStats();
+                }
+            }
+
+            updateStats() {
+                const users = JSON.parse(localStorage.getItem(this.usersKey)) || [];
+                const currentUser = JSON.parse(localStorage.getItem(this.currentUserKey));
+                
+                document.getElementById('totalUsersCount').textContent = users.length;
+
+                if (currentUser && authManager) {
+                    const followingCount = authManager.getFollowingCount(currentUser.id);
+                    const subscribersCount = authManager.getSubscribersCount(currentUser.id);
+                    document.getElementById('yourFollowingCount').textContent = followingCount;
+                    document.getElementById('yourSubscribersCount').textContent = subscribersCount;
+                } else {
+                    document.getElementById('yourFollowingCount').textContent = '0';
+                    document.getElementById('yourSubscribersCount').textContent = '0';
+                }
+            }
+        }
+
+        let usersPageManager;
+        document.addEventListener('DOMContentLoaded', () => {
+            usersPageManager = new UsersPageManager();
+        });
+    </script>
+
+    <script src="api-client.js"></script>
+    <script src="auth-script-api.js"></script>
+    <script src="search-dropdown.js"></script>
+</body>
+</html>

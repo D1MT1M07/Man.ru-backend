@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Профиль пользователя - Man.ru">
+    <title>Профиль пользователя - Man.ru</title>
+    <link rel="stylesheet" href="modern.css">
+    <style>
+        .user-profile-header {
+            background: white;
+            border-radius: 6px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            display: grid;
+            grid-template-columns: 150px 1fr;
+            gap: 30px;
+            align-items: start;
+        }
+
+        .user-avatar-section {
+            text-align: center;
+        }
+
+        .avatar-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: #3498db;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 60px;
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+
+        .avatar-circle img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .user-info h1 {
+            font-size: 24px;
+            color: #222;
+            margin-bottom: 8px;
+        }
+
+        .user-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: #f5f5f5;
+            padding: 16px;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .stat-card__number {
+            font-size: 20px;
+            font-weight: 700;
+            color: #4a9eff;
+        }
+
+        .stat-card__label {
+            font-size: 12px;
+            color: #999;
+            margin-top: 4px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            background: #4a9eff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .btn-primary:hover {
+            background: #2d7ed8;
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #666;
+            border: 1px solid #ddd;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .btn-secondary.subscribed {
+            background: #4caf50;
+            color: white;
+            border-color: #4caf50;
+        }
+
+        @media (max-width: 768px) {
+            .user-profile-header {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .user-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .action-buttons {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header__top">
+            <div class="header__container">
+                <div class="header__logo">
+                    <h1><a href="index.html" style="text-decoration: none;">Man.ru</a></h1>
+                    <div class="header__tagline">Стиль. Успех. Гармония</div>
+                </div>
+                <div class="header__search">
+                    <input type="text" placeholder="Поиск по сайту..." class="header__search-input">
+                    <button class="header__search-btn">🔍</button>
+                </div>
+                <div class="header__auth" id="authContainer">
+                    <!-- Auth button will be inserted here -->
+                </div>
+            </div>
+        </div>
+        
+        <nav class="header__nav">
+            <div class="header__container">
+                <ul class="nav__list">
+                    <li><a href="health.html" class="nav__link">❤️ Здоровье</a></li>
+                    <li><a href="fitness.html" class="nav__link">💪 Фитнес</a></li>
+                    <li><a href="career.html" class="nav__link">💼 Карьера</a></li>
+                    <li><a href="tech.html" class="nav__link">⚡ Технологии</a></li>
+                    <li><a href="style.html" class="nav__link">👔 Стиль</a></li>
+                    <li><a href="relations.html" class="nav__link">💑 Отношения</a></li>
+                    <li><a href="forum.html" class="nav__link">💬 Форум</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-container">
+        <div class="container" style="max-width: 1200px;">
+            <div id="userNotFound" style="text-align: center; padding: 60px 20px; display: none;">
+                <h2 style="font-size: 24px; margin-bottom: 16px;">Пользователь не найден</h2>
+                <p style="color: #666; margin-bottom: 20px;">Возможно, пользователь удалил свой аккаунт или неверен ID</p>
+                <a href="users.html" style="display: inline-block; background: #4a9eff; color: white; padding: 10px 20px; border-radius: 4px; text-decoration: none; font-weight: 600;">← Вернуться к пользователям</a>
+            </div>
+
+            <div id="userContent" style="display: none;">
+                <!-- User Profile Header -->
+                <div class="user-profile-header">
+                    <div class="user-avatar-section">
+                        <div class="avatar-circle" id="userAvatar">👤</div>
+                    </div>
+                    <div class="user-info">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap;">
+                            <h1 id="userName">Имя пользователя</h1>
+                        </div>
+                        <p id="userEmail" style="color: #666; font-size: 14px; margin-bottom: 16px;">email@example.com</p>
+                        <p id="userBio" style="color: #777; font-size: 14px; margin-bottom: 16px; font-style: italic;"></p>
+                        <div class="user-stats">
+                            <div class="stat-card">
+                                <div class="stat-card__number" id="userArticlesCount">0</div>
+                                <div class="stat-card__label">Статей написано</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-card__number" id="userPostsCount">0</div>
+                                <div class="stat-card__label">Постов на форуме</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-card__number" id="userSubscribersCount">0</div>
+                                <div class="stat-card__label">Подписчики</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-card__number" id="userFollowingCount">0</div>
+                                <div class="stat-card__label">Подписок</div>
+                            </div>
+                        </div>
+                        <div class="action-buttons">
+                            <button id="subscribeBtn" class="btn-primary" style="display: none;">
+                                📌 Подписаться
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Articles Section -->
+                <div class="profile-section">
+                    <h3 class="profile-section__title">📝 Статьи этого автора</h3>
+                    <div id="userArticles" class="section-content"></div>
+                    <div id="noArticles" class="empty-state" style="display: none;">
+                        <div class="empty-state__icon">📭</div>
+                        <p>Этот пользователь пока не написал статей</p>
+                    </div>
+                </div>
+
+                <!-- Posts Section -->
+                <div class="profile-section">
+                    <h3 class="profile-section__title">💬 Посты на форуме</h3>
+                    <div id="userPosts" class="section-content"></div>
+                    <div id="noPosts" class="empty-state" style="display: none;">
+                        <div class="empty-state__icon">💭</div>
+                        <p>Этот пользователь пока не создал посты на форуме</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer__container">
+            <div class="footer__content">
+                <div class="footer__section">
+                    <h4>О сайте</h4>
+                    <ul>
+                        <li><a href="about.html">О Man.ru</a></li>
+                        <li><a href="advertise.html">Реклама</a></li>
+                        <li><a href="contacts.html">Контакты</a></li>
+                    </ul>
+                </div>
+                <div class="footer__section">
+                    <h4>Информация</h4>
+                    <ul>
+                        <li><a href="terms.html">Соглашение пользователя</a></li>
+                        <li><a href="privacy.html">Политика конфиденциальности</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer__bottom">
+                <p>&copy; 2026 Man.ru. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="api-client.js"></script>
+    <script src="auth-script-api.js"></script>
+    <script src="search-dropdown.js"></script>
+    <script>
+        class UserProfileViewer {
+            constructor() {
+                this.usersKey = 'man_ru_users';
+                this.articlesKey = 'man_ru_articles';
+                this.forumPostsKey = 'man_ru_forum_posts';
+                this.currentUserKey = 'man_ru_current_user';
+                this.init();
+            }
+
+            init() {
+                // Get user ID from URL parameter
+                const params = new URLSearchParams(window.location.search);
+                const userId = params.get('id');
+
+                if (userId) {
+                    this.loadUserProfile(userId);
+                } else {
+                    this.showNotFound();
+                }
+            }
+
+            loadUserProfile(userId) {
+                const users = JSON.parse(localStorage.getItem(this.usersKey)) || [];
+                const user = users.find(u => u.id === userId);
+
+                if (!user) {
+                    this.showNotFound();
+                    return;
+                }
+
+                this.displayUserProfile(user);
+                this.loadUserContent(user);
+                this.setupSubscribeButton(user);
+            }
+
+            displayUserProfile(user) {
+                const avatar = user.avatar || '👤';
+                let avatarHTML = avatar;
+                if (avatar && avatar.startsWith('data:')) {
+                    avatarHTML = `<img src="${avatar}">`;
+                }
+
+                const users = JSON.parse(localStorage.getItem(this.usersKey)) || [];
+                const subscribersCount = user.followers ? user.followers.length : 0;
+                const followingCount = user.following ? user.following.length : 0;
+
+                document.getElementById('userContent').style.display = 'block';
+                document.getElementById('userNotFound').style.display = 'none';
+
+                document.getElementById('userAvatar').innerHTML = avatarHTML;
+                document.getElementById('userName').textContent = user.name;
+                document.getElementById('userEmail').textContent = user.email;
+                document.getElementById('userBio').textContent = user.bio || 'Нет биографии';
+
+                const articles = JSON.parse(localStorage.getItem(this.articlesKey)) || [];
+                const posts = JSON.parse(localStorage.getItem(this.forumPostsKey)) || [];
+
+                const userArticles = articles.filter(a => a.authorEmail === user.email);
+                const userPosts = posts.filter(p => p.authorEmail === user.email);
+
+                document.getElementById('userArticlesCount').textContent = userArticles.length;
+                document.getElementById('userPostsCount').textContent = userPosts.length;
+                document.getElementById('userSubscribersCount').textContent = subscribersCount;
+                document.getElementById('userFollowingCount').textContent = followingCount;
+            }
+
+            loadUserContent(user) {
+                const articles = JSON.parse(localStorage.getItem(this.articlesKey)) || [];
+                const posts = JSON.parse(localStorage.getItem(this.forumPostsKey)) || [];
+                const users = JSON.parse(localStorage.getItem(this.usersKey)) || [];
+
+                const userArticles = articles.filter(a => a.authorEmail === user.email);
+                const userPosts = posts.filter(p => p.authorEmail === user.email);
+
+                this.displayArticles(userArticles, users);
+                this.displayPosts(userPosts, users);
+            }
+
+            displayArticles(articles, users) {
+                const container = document.getElementById('userArticles');
+                const noArticles = document.getElementById('noArticles');
+
+                if (articles.length === 0) {
+                    container.style.display = 'none';
+                    noArticles.style.display = 'block';
+                    return;
+                }
+
+                noArticles.style.display = 'none';
+                container.innerHTML = articles.map(article => {
+                    const author = users.find(u => u.email === article.authorEmail);
+                    const avatar = author ? author.avatar : '👤';
+                    let avatarHTML = avatar;
+                    if (avatar && avatar.startsWith('data:')) {
+                        avatarHTML = `<img src="${avatar}" style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover;">`;
+                    } else {
+                        avatarHTML = `<span style="font-size: 18px;">${avatar}</span>`;
+                    }
+                    
+                    return `
+                        <div class="content-item" style="background: white; border-radius: 6px; padding: 16px; box-shadow: 0 2px 6px rgba(0,0,0,0.06); transition: all 0.2s ease;">
+                            <div class="content-item__category" style="display: inline-block; font-size: 10px; color: #4a9eff; text-transform: uppercase; margin-bottom: 8px;">${article.category}</div>
+                            <div class="content-item__title" style="font-size: 14px; font-weight: 600; color: #222; margin-bottom: 8px;">${article.title}</div>
+                            <p style="font-size: 12px; color: #666; margin: 8px 0;">${article.description}</p>
+                            <div style="font-size: 11px; color: #999; display: flex; justify-content: space-between; margin-top: 8px;">
+                                <span>${article.date}</span>
+                                <span style="display: flex; align-items: center; gap: 6px;">${avatarHTML} ${article.author}</span>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            displayPosts(posts, users) {
+                const container = document.getElementById('userPosts');
+                const noPosts = document.getElementById('noPosts');
+
+                if (posts.length === 0) {
+                    container.style.display = 'none';
+                    noPosts.style.display = 'block';
+                    return;
+                }
+
+                noPosts.style.display = 'none';
+                container.innerHTML = posts.map(post => {
+                    const author = users.find(u => u.email === post.authorEmail);
+                    const avatar = author ? author.avatar : '👤';
+                    let avatarHTML = avatar;
+                    if (avatar && avatar.startsWith('data:')) {
+                        avatarHTML = `<img src="${avatar}" style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover;">`;
+                    } else {
+                        avatarHTML = `<span style="font-size: 18px;">${avatar}</span>`;
+                    }
+                    
+                    return `
+                        <div class="content-item" style="background: white; border-radius: 6px; padding: 16px; box-shadow: 0 2px 6px rgba(0,0,0,0.06); transition: all 0.2s ease;">
+                            <div class="content-item__category" style="display: inline-block; font-size: 10px; color: #4a9eff; text-transform: uppercase; margin-bottom: 8px;">Форум</div>
+                            <div class="content-item__title" style="font-size: 14px; font-weight: 600; color: #222; margin-bottom: 8px;">${post.title}</div>
+                            <p style="font-size: 12px; color: #666; margin: 8px 0;">${post.message}</p>
+                            <div style="font-size: 11px; color: #999; display: flex; justify-content: space-between; margin-top: 8px;">
+                                <span>${post.date}</span>
+                                <span style="display: flex; align-items: center; gap: 6px;">${avatarHTML} ${post.author}</span>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            setupSubscribeButton(user) {
+                const currentUser = JSON.parse(localStorage.getItem(this.currentUserKey));
+                const subscribeBtn = document.getElementById('subscribeBtn');
+
+                if (!currentUser || currentUser.id === user.id) {
+                    subscribeBtn.style.display = 'none';
+                    return;
+                }
+
+                subscribeBtn.style.display = 'inline-block';
+
+                const isFollowing = authManager ? authManager.isFollowing(user.id) : false;
+                if (isFollowing) {
+                    subscribeBtn.textContent = '✓ Вы подписаны';
+                    subscribeBtn.classList.add('subscribed');
+                }
+
+                subscribeBtn.addEventListener('click', () => {
+                    if (authManager) {
+                        authManager.subscribeToUser(user.id);
+                        const isNowFollowing = authManager.isFollowing(user.id);
+                        
+                        if (isNowFollowing) {
+                            subscribeBtn.textContent = '✓ Вы подписаны';
+                            subscribeBtn.classList.add('subscribed');
+                        } else {
+                            subscribeBtn.textContent = '📌 Подписаться';
+                            subscribeBtn.classList.remove('subscribed');
+                        }
+
+                        // Обновляем статистику
+                        const users = JSON.parse(localStorage.getItem(this.usersKey)) || [];
+                        const updatedUser = users.find(u => u.id === user.id);
+                        if (updatedUser) {
+                            const subscribersCount = updatedUser.followers ? updatedUser.followers.length : 0;
+                            document.getElementById('userSubscribersCount').textContent = subscribersCount;
+                        }
+                    }
+                });
+            }
+
+            showNotFound() {
+                document.getElementById('userContent').style.display = 'none';
+                document.getElementById('userNotFound').style.display = 'block';
+            }
+        }
+
+        let userProfileViewer;
+        document.addEventListener('DOMContentLoaded', () => {
+            userProfileViewer = new UserProfileViewer();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+# Зависимости
+node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json
+yarn.lock
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+.env.local
+.env.*.local
+
+# Production
+dist/
+build/
+*.min.css
+*.min.js
+
+# Минифицированные файлы
+*.min.*
+
+# Логи
+*.log
+logs/
+
+# Временные файлы
+temp/
+tmp/
+*.temp
+
+# OS
+.DS_Store
+Thumbs.db
+.directory
+
+# Резервные копии
+*.bak
+*.backup
+*.old
+
+# Глобальные
+
+.cache/
+.parcel-cache
+.next
+.nuxt
+out
+.cache
+dist
+.cache/
+.vuepress/dist
+.serverless/
+.fusebox/
+.dynamodb/
+.tern-port
+.vscode-test
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*
