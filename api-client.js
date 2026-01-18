@@ -19,12 +19,18 @@ class APIClient {
     getAPIBaseURL() {
         // Для локального разработки
         if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
-            console.log('Using local API URL');
+            console.log('🔧 Using local API URL (localhost)');
             return 'http://localhost:3000/api';
         }
         if (typeof window !== 'undefined' && window.location.hostname === '127.0.0.1') {
-            console.log('Using 127.0.0.1 API URL');
+            console.log('🔧 Using local API URL (127.0.0.1)');
             return 'http://127.0.0.1:3000/api';
+        }
+        
+        // Для Netlify версии - обращаемся к Render backend
+        if (typeof window !== 'undefined' && (window.location.hostname.includes('netlify.app') || window.location.hostname.includes('netlify.com'))) {
+            console.log('🔧 Using Render backend for Netlify frontend');
+            return 'https://man-ru.onrender.com/api';
         }
         
         // Для продакшена на Render
@@ -106,7 +112,18 @@ class APIClient {
 
             return result;
         } catch (error) {
-            console.error(`❌ API Error [${method} ${endpoint}]:`, error.message);
+            console.error(`❌ API Error [${method} ${endpoint}]:`);
+            console.error(`   Message: ${error.message}`);
+            console.error(`   Type: ${error.constructor.name}`);
+            console.error(`   Stack: ${error.stack}`);
+            
+            // Специальная обработка для fetch ошибок
+            if (error.message.includes('fetch') || error.constructor.name === 'TypeError') {
+                console.error(`   🌐 Network/Fetch Error - возможно CORS, DNS или сервис down`);
+                console.error(`   URL: ${url}`);
+                console.error(`   Method: ${method}`);
+            }
+            
             throw error;
         }
     }
