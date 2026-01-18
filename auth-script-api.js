@@ -11,6 +11,10 @@ class AuthManager {
     }
 
     init() {
+        // Инициализация всегда происходит сразу в constructor
+        // DOM должен быть готов к этому моменту
+        console.log('AuthManager: init() called, DOM readyState:', document.readyState);
+        
         this.setupAuthButton();
         this.setupAuthModal();
         this.updateAuthUI();
@@ -155,33 +159,48 @@ class AuthManager {
 
     setupAuthButton() {
         const authContainer = document.getElementById('authContainer');
-        if (!authContainer) return;
+        if (!authContainer) {
+            console.warn('authContainer not found');
+            return;
+        }
 
         const currentUser = this.getCurrentUser();
 
         if (currentUser) {
             // Пользователь вошел
             authContainer.innerHTML = `
-                <button class="auth-btn" id="userMenuBtn">
+                <button class="auth-btn" id="userMenuBtn" style="cursor: pointer;">
                     👤 ${currentUser.name}
                 </button>
             `;
             
-            document.getElementById('userMenuBtn').addEventListener('click', () => {
-                const menu = document.getElementById('userMenu');
-                if (menu) {
-                    menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-                }
-            });
+            const userMenuBtn = document.getElementById('userMenuBtn');
+            if (userMenuBtn) {
+                userMenuBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const menu = document.getElementById('userMenu');
+                    if (menu) {
+                        menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+                    }
+                });
+            }
         } else {
             // Пользователь не вошел
             authContainer.innerHTML = `
-                <button class="auth-btn" id="authBtn">🔐 Вход / Регистрация</button>
+                <button class="auth-btn" id="authBtn" style="cursor: pointer;">🔐 Вход / Регистрация</button>
             `;
             
             const authBtn = document.getElementById('authBtn');
             if (authBtn) {
-                authBtn.addEventListener('click', () => this.openAuthModal());
+                authBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('Auth button clicked - opening modal');
+                    this.openAuthModal();
+                });
+            } else {
+                console.error('authBtn not found');
             }
         }
     }
@@ -240,12 +259,21 @@ class AuthManager {
 
     openAuthModal() {
         const modal = document.getElementById('authModal');
-        if (modal) modal.style.display = 'block';
+        console.log('Opening auth modal:', modal);
+        if (modal) {
+            modal.classList.add('active');
+            modal.style.display = 'flex';
+        } else {
+            console.error('Auth modal not found in DOM');
+        }
     }
 
     closeAuthModal() {
         const modal = document.getElementById('authModal');
-        if (modal) modal.style.display = 'none';
+        if (modal) {
+            modal.classList.remove('active');
+            modal.style.display = 'none';
+        }
     }
 
     updateAuthUI() {
@@ -300,15 +328,26 @@ class AuthManager {
     }
 }
 
-// Инициализируем при загрузке страницы
-document.addEventListener('DOMContentLoaded', () => {
+// Инициализируем AuthManager
+function initializeAuthManager() {
+    if (window.authManager) return; // Already initialized
+    
+    console.log('Initializing AuthManager...');
     window.authManager = new AuthManager();
     
-    // Обработчик кнопки выхода
+    // Setup logout button handler
     const logoutBtn = document.getElementById('logoutBtn');
     if (logoutBtn) {
         logoutBtn.addEventListener('click', () => {
             window.authManager.logout();
         });
     }
-});
+}
+
+// Wait for DOM to be ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeAuthManager);
+} else {
+    // DOM already loaded
+    initializeAuthManager();
+}

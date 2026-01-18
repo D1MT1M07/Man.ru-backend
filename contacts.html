@@ -173,6 +173,68 @@
         </div>
     </footer>
 
+    <!-- Auth Modal -->
+    <div class="modal" id="authModal">
+        <div class="modal__overlay"></div>
+        <div class="modal__content" style="max-width: 500px;">
+            <div class="modal__header">
+                <h2>Вход / Регистрация</h2>
+                <button id="closeAuthBtn" class="modal__close-btn">&times;</button>
+            </div>
+            
+            <div class="auth-tabs">
+                <button id="loginTab" class="auth-tab active">🔐 Вход</button>
+                <button id="registerTab" class="auth-tab">✍️ Регистрация</button>
+            </div>
+
+            <!-- Login Form -->
+            <form id="loginForm" class="forum-form">
+                <div class="form-group">
+                    <label for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" placeholder="your@email.com" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="loginPassword">Пароль</label>
+                    <input type="password" id="loginPassword" placeholder="Минимум 6 символов" required>
+                </div>
+                
+                <button type="button" id="loginSubmit" class="btn btn--primary" style="width: 100%;">Войти</button>
+            </form>
+
+            <!-- Register Form -->
+            <form id="registerForm" class="forum-form" style="display: none;">
+                <div class="form-group">
+                    <label for="registerName">Имя</label>
+                    <input type="text" id="registerName" placeholder="Ваше имя" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="registerEmail">Email</label>
+                    <input type="email" id="registerEmail" placeholder="your@email.com" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="registerPassword">Пароль</label>
+                    <input type="password" id="registerPassword" placeholder="Минимум 6 символов" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="registerPasswordConfirm">Подтвердить пароль</label>
+                    <input type="password" id="registerPasswordConfirm" placeholder="Повторите пароль" required>
+                </div>
+                
+                <button type="button" id="registerSubmit" class="btn btn--primary" style="width: 100%;">Зарегистрироваться</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- User Menu (for logged in users) -->
+    <div id="userMenu" style="display: none; position: absolute; top: 60px; right: 20px; background: white; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 999;">
+        <a href="profile.html" style="display: block; padding: 12px 20px; text-decoration: none; color: #333; border-bottom: 1px solid #eee;">👤 Мой профиль</a>
+        <button id="logoutBtn" style="width: 100%; padding: 12px 20px; background: none; border: none; color: #ef4444; cursor: pointer; text-align: left; font-weight: 600;">🚪 Выход</button>
+    </div>
+
     <script src="script.js"></script>
     <script src="api-client.js"></script>
     <script src="auth-script-api.js"></script>

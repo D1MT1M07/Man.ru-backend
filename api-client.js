@@ -19,15 +19,20 @@ class APIClient {
     getAPIBaseURL() {
         // Для локального разработки
         if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+            console.log('Using local API URL');
             return 'http://localhost:3000/api';
         }
         if (typeof window !== 'undefined' && window.location.hostname === '127.0.0.1') {
+            console.log('Using 127.0.0.1 API URL');
             return 'http://127.0.0.1:3000/api';
         }
         
         // Для продакшена на Render
-        // ЗАМЕНИ НА СВОЙ URL ИЗ RENDER ДАШБОРДА!
-        return 'https://men-ru-backend-xxxx.onrender.com/api';
+        // ВАЖНО: обновите URL на ваш реальный Render сервис URL!
+        // Можно найти на https://dashboard.render.com -> выберите сервис -> скопируйте URL
+        const backendURL = 'https://man-ru.onrender.com';
+        console.log('Using production API URL:', backendURL);
+        return backendURL;
     }
 
     setToken(token) {
@@ -46,6 +51,7 @@ class APIClient {
     async request(method, endpoint, data = null) {
         try {
             const url = `${this.baseURL}${endpoint}`;
+            console.log(`API Request: ${method} ${url}`, data);
             const options = {
                 method,
                 headers: this.getHeaders()
