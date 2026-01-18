@@ -66,23 +66,28 @@ app.use((req, res, next) => {
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Специальный обработчик для статических файлов
-// Проверяем есть ли расширение - если есть, ищем статический файл
-// Если нет расширения, пропускаем для SPA маршрутизации
+// ВАЖНО: /api маршруты должны быть обработаны ПОСЛЕ этой проверки
+// Но ПЕРЕД тем как мы вызовем express.static
 app.use((req, res, next) => {
+    // Логируем что видим
+    console.log(`   🔍 Static middleware check: ${req.method} ${req.path}, ext: ${path.extname(req.path)}`);
+    
     const ext = path.extname(req.path);
     
     // Если есть расширение файла (CSS, JS, PNG, и т.д.) - ищем статический файл
     if (ext) {
+        console.log(`   ✅ Has extension, serving static file`);
         express.static(path.join(__dirname))(req, res, next);
     } else {
-        // Иначе пропускаем - будет обработано SPA routing
+        // Иначе пропускаем - будет обработано SPA routing или API
+        console.log(`   ⏭️  No extension, skipping to next middleware`);
         next();
     }
 });
 
 // Для главной страницы
 app.get('/', (req, res) => {
+    console.log('   → Serving index.html for /');
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
@@ -99,11 +104,20 @@ console.log(`   SUPABASE_URL: ${SUPABASE_URL.substring(0, 30)}...`);
 console.log(`   SUPABASE_KEY: ${SUPABASE_KEY.substring(0, 30)}...`);
 console.log(`   JWT_SECRET: ${JWT_SECRET.substring(0, 20)}...`);
 
-const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
-
-console.log('✅ Supabase client created');
-console.log(`   URL: ${SUPABASE_URL}`);
-console.log(`   Key length: ${SUPABASE_KEY.length}`);
+let supabase;
+try {
+    console.log('⏳ Creating Supabase client...');
+    supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+    console.log('✅ Supabase client created');
+    console.log(`   URL: ${SUPABASE_URL}`);
+    console.log(`   Key length: ${SUPABASE_KEY.length}`);
+} catch (error) {
+    console.error('❌ ERROR creating Supabase client!');
+    console.error('   Error:', error.message);
+    console.error('   Stack:', error.stack);
+    console.error('   This will cause ALL routes to fail!');
+    throw error; // Re-throw так чтобы сервис crash'ился и показал ошибку
+}
 
 // ========================================
 // MIDDLEWARE - АУТЕНТИФИКАЦИЯ
@@ -128,6 +142,8 @@ const verifyToken = (req, res, next) => {
 // ========================================
 // ROUTES - ПОЛЬЗОВАТЕЛИ
 // ========================================
+
+console.log('📍 ABOUT TO REGISTER ROUTES...');
 
 // Регистрация
 app.post('/api/auth/register', async (req, res) => {
@@ -591,11 +607,17 @@ app.get('/health', async (req, res) => {
 // 404 HANDLER - SERVE INDEX.HTML FOR SPA
 // ========================================
 
+console.log('📍 All routes registered, setting up 404 handler');
+
 app.use((req, res) => {
     // Если запрос не на API и не на статический файл, отправляем index.html
+    console.log(`🚫 404 Handler: ${req.method} ${req.path}`);
+    
     if (!req.path.startsWith('/api')) {
+        console.log(`   → SPA routing, sending index.html`);
         res.sendFile(path.join(__dirname, 'index.html'));
     } else {
+        console.log(`   → API route not found, returning 404`);
         res.status(404).json({
             error: 'Route not found',
             path: req.path
