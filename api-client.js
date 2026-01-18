@@ -25,19 +25,9 @@ class APIClient {
             return 'http://127.0.0.1:3000/api';
         }
         
-        // Для продакшена - использует переменную окружения или угадывает
-        if (typeof process !== 'undefined' && process.env.BACKEND_URL) {
-            return process.env.BACKEND_URL + '/api';
-        }
-        
-        // Если на Netlify, предполагаем что бэкенд на Heroku с тем же названием
-        if (typeof window !== 'undefined' && window.location.hostname.includes('netlify.app')) {
-            // Замени 'твой-бэкенд-heroku' на реальное имя
-            return 'https://твой-бэкенд-heroku.herokuapp.com/api';
-        }
-        
-        // По умолчанию для продакшена
-        return 'https://api.твой-домен.com/api'; 
+        // Для продакшена на Render
+        // ЗАМЕНИ НА СВОЙ URL ИЗ RENDER ДАШБОРДА!
+        return 'https://men-ru-backend-xxxx.onrender.com/api';
     }
 
     setToken(token) {

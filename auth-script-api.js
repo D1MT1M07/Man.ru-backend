@@ -303,4 +303,12 @@ class AuthManager {
 // Инициализируем при загрузке страницы
 document.addEventListener('DOMContentLoaded', () => {
     window.authManager = new AuthManager();
+    
+    // Обработчик кнопки выхода
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            window.authManager.logout();
+        });
+    }
 });
