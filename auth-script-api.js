@@ -82,7 +82,9 @@ class AuthManager {
         }
 
         try {
+            console.log('📤 Sending registration request...', { name, email });
             const result = await this.api.register(name, email, password);
+            console.log('✅ Registration successful:', result);
             
             // Сохраняем токен и данные пользователя
             this.api.setToken(result.token);
@@ -99,7 +101,7 @@ class AuthManager {
             }, 1500);
             
         } catch (error) {
-            console.error('Registration error:', error);
+            console.error('❌ Registration error details:', error);
             this.showNotification(`❌ Ошибка регистрации: ${error.message}`, 'error');
         }
     }
@@ -118,7 +120,9 @@ class AuthManager {
         }
 
         try {
+            console.log('📤 Sending login request...', { email });
             const result = await this.api.login(email, password);
+            console.log('✅ Login successful:', result);
             
             // Сохраняем токен и данные пользователя
             this.api.setToken(result.token);
@@ -135,7 +139,7 @@ class AuthManager {
             }, 1500);
             
         } catch (error) {
-            console.error('Login error:', error);
+            console.error('❌ Login error details:', error);
             this.showNotification(`❌ Ошибка входа: ${error.message}`, 'error');
         }
     }

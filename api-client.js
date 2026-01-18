@@ -51,7 +51,7 @@ class APIClient {
     async request(method, endpoint, data = null) {
         try {
             const url = `${this.baseURL}${endpoint}`;
-            console.log(`API Request: ${method} ${url}`, data);
+            console.log(`🔗 API Request: ${method} ${url}`, data);
             const options = {
                 method,
                 headers: this.getHeaders()
@@ -62,10 +62,29 @@ class APIClient {
             }
 
             const response = await fetch(url, options);
-            const result = await response.json();
+            console.log(`📊 Response status: ${response.status}`, response.statusText);
+            
+            // Получаем текст ответа
+            const text = await response.text();
+            console.log(`📝 Response text:`, text.substring(0, 200));
+            
+            // Проверяем пустой ответ
+            if (!text) {
+                throw new Error('Empty response from server');
+            }
+            
+            // Пытаемся распарсить JSON
+            let result;
+            try {
+                result = JSON.parse(text);
+            } catch (parseError) {
+                console.error('❌ JSON Parse Error:', parseError);
+                console.error('Response was:', text);
+                throw new Error(`Invalid JSON response: ${text.substring(0, 100)}`);
+            }
 
             if (!response.ok) {
-                throw new Error(result.error || 'API Error');
+                throw new Error(result.error || `HTTP ${response.status}`);
             }
 
             return result;
