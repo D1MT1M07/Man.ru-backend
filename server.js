@@ -13,6 +13,8 @@ import dotenv from 'dotenv';
 import { createClient } from '@supabase/supabase-js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 dotenv.config();
 
@@ -40,28 +42,46 @@ app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// Заголовки для отключения кэша
+app.use((req, res, next) => {
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+    res.set('Pragma', 'no-cache');
+    res.set('Expires', '0');
+    next();
+});
+
+// Логирование всех запросов
+app.use((req, res, next) => {
+    console.log(`📨 [${new Date().toISOString()}] ${req.method} ${req.path}`);
+    if (req.body && Object.keys(req.body).length > 0) {
+        console.log(`   Body:`, JSON.stringify(req.body).substring(0, 100));
+    }
+    next();
+});
+
 // ========================================
 // STATIC FILES - SERVE FRONTEND
 // ========================================
 
-import path from 'path';
-import { fileURLToPath } from 'url';
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Раздаём статические файлы (HTML, CSS, JS, изображения и т.д.)
-// Но НЕ перехватываем /api маршруты
+// Специальный обработчик для статических файлов
+// Проверяем есть ли расширение - если есть, ищем статический файл
+// Если нет расширения, пропускаем для SPA маршрутизации
 app.use((req, res, next) => {
-    // Пропускаем /api маршруты
-    if (req.path.startsWith('/api')) {
-        return next();
+    const ext = path.extname(req.path);
+    
+    // Если есть расширение файла (CSS, JS, PNG, и т.д.) - ищем статический файл
+    if (ext) {
+        express.static(path.join(__dirname))(req, res, next);
+    } else {
+        // Иначе пропускаем - будет обработано SPA routing
+        next();
     }
-    // Остальное - статические файлы
-    express.static(path.join(__dirname))(req, res, next);
 });
 
-// Для SPA маршрутизации - отправляй index.html для всех неизвестных маршрутов
+// Для главной страницы
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
@@ -104,10 +124,13 @@ const verifyToken = (req, res, next) => {
 
 // Регистрация
 app.post('/api/auth/register', async (req, res) => {
+    console.log('🔐 Registration request received');
     try {
         const { name, email, password } = req.body;
+        console.log(`   User: ${name} <${email}>`);
 
         if (!name || !email || !password) {
+            console.log('   ❌ Missing fields');
             return res.status(400).json({ error: 'Missing required fields' });
         }
 
@@ -119,6 +142,7 @@ app.post('/api/auth/register', async (req, res) => {
             .single();
 
         if (existing) {
+            console.log('   ❌ Email already exists');
             return res.status(400).json({ error: 'Email already registered' });
         }
 
@@ -138,7 +162,12 @@ app.post('/api/auth/register', async (req, res) => {
             .select()
             .single();
 
-        if (error) throw error;
+        if (error) {
+            console.log('   ❌ Database error:', error.message);
+            throw error;
+        }
+
+        console.log('   ✅ User created:', user.id);
 
         // Генерация JWT токена
         const token = jwt.sign(
@@ -146,6 +175,8 @@ app.post('/api/auth/register', async (req, res) => {
             JWT_SECRET,
             { expiresIn: '7d' }
         );
+
+        console.log('   ✅ Token generated');
 
         res.status(201).json({
             success: true,
@@ -158,8 +189,12 @@ app.post('/api/auth/register', async (req, res) => {
             token
         });
     } catch (error) {
-        console.error('❌ Ошибка регистрации:', error.message);
-        res.status(500).json({ error: error.message });
+        console.error('❌ Ошибка регистрации:', error);
+        console.error('   Stack:', error.stack);
+        res.status(500).json({ 
+            error: error.message,
+            details: error.toString()
+        });
     }
 });
 
