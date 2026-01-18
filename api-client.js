@@ -55,6 +55,9 @@ class APIClient {
         try {
             const url = `${this.baseURL}${endpoint}`;
             console.log(`🔗 API Request: ${method} ${url}`, data);
+            console.log(`   Full URL: ${url}`);
+            console.log(`   Headers:`, this.getHeaders());
+            
             const options = {
                 method,
                 headers: this.getHeaders()
@@ -62,18 +65,29 @@ class APIClient {
 
             if (data) {
                 options.body = JSON.stringify(data);
+                console.log(`   Body:`, options.body);
             }
 
+            console.log(`⏳ Fetching...`);
             const response = await fetch(url, options);
-            console.log(`📊 Response status: ${response.status}`, response.statusText);
+            console.log(`📊 Response received!`);
+            console.log(`   Status: ${response.status} ${response.statusText}`);
+            console.log(`   Headers:`, {
+                'content-type': response.headers.get('content-type'),
+                'content-length': response.headers.get('content-length')
+            });
             
             // Получаем текст ответа
+            console.log(`⏳ Reading response text...`);
             const text = await response.text();
-            console.log(`📝 Response text:`, text.substring(0, 200));
+            console.log(`✅ Response text received (${text.length} bytes)`);
+            console.log(`📝 Response text:`, text.substring(0, 300));
             
             // Проверяем пустой ответ
             if (!text) {
-                throw new Error('Empty response from server');
+                console.error(`❌ Empty response! Status was ${response.status}`);
+                console.error(`   Response headers:`, response.headers);
+                throw new Error(`Empty response from server (status ${response.status})`);
             }
             
             // Пытаемся распарсить JSON

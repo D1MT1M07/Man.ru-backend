@@ -94,9 +94,16 @@ const SUPABASE_URL = process.env.SUPABASE_URL || 'https://YOUR_PROJECT.supabase.
 const SUPABASE_KEY = process.env.SUPABASE_KEY || 'YOUR_ANON_KEY';
 const JWT_SECRET = process.env.JWT_SECRET || 'your-super-secret-jwt-key-change-in-production';
 
+console.log('📋 Environment variables:');
+console.log(`   SUPABASE_URL: ${SUPABASE_URL.substring(0, 30)}...`);
+console.log(`   SUPABASE_KEY: ${SUPABASE_KEY.substring(0, 30)}...`);
+console.log(`   JWT_SECRET: ${JWT_SECRET.substring(0, 20)}...`);
+
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-console.log('✅ Supabase подключён:', SUPABASE_URL);
+console.log('✅ Supabase client created');
+console.log(`   URL: ${SUPABASE_URL}`);
+console.log(`   Key length: ${SUPABASE_KEY.length}`);
 
 // ========================================
 // MIDDLEWARE - АУТЕНТИФИКАЦИЯ
@@ -125,6 +132,7 @@ const verifyToken = (req, res, next) => {
 // Регистрация
 app.post('/api/auth/register', async (req, res) => {
     console.log('🔐 Registration request received');
+    console.log(`   Timestamp: ${new Date().toISOString()}`);
     try {
         const { name, email, password } = req.body;
         console.log(`   User: ${name} <${email}>`);
@@ -135,11 +143,14 @@ app.post('/api/auth/register', async (req, res) => {
         }
 
         // Проверка на существующий email
-        const { data: existing } = await supabase
+        console.log('   ⏳ Checking if email exists...');
+        const { data: existing, error: checkError } = await supabase
             .from('users')
             .select('id')
             .eq('email', email)
             .single();
+        
+        console.log(`   ✅ Email check completed. Error:`, checkError?.message || 'none');
 
         if (existing) {
             console.log('   ❌ Email already exists');
@@ -147,10 +158,13 @@ app.post('/api/auth/register', async (req, res) => {
         }
 
         // Хеширование пароля
+        console.log('   ⏳ Hashing password...');
         const hashedPassword = await bcrypt.hash(password, 10);
+        console.log('   ✅ Password hashed');
 
         // Создание пользователя
-        const { data: user, error } = await supabase
+        console.log('   ⏳ Inserting user to database...');
+        const { data: user, error: insertError } = await supabase
             .from('users')
             .insert([{
                 name,
@@ -162,14 +176,15 @@ app.post('/api/auth/register', async (req, res) => {
             .select()
             .single();
 
-        if (error) {
-            console.log('   ❌ Database error:', error.message);
-            throw error;
+        if (insertError) {
+            console.log('   ❌ Database insert error:', insertError);
+            throw insertError;
         }
 
-        console.log('   ✅ User created:', user.id);
+        console.log('   ✅ User created:', user?.id);
 
         // Генерация JWT токена
+        console.log('   ⏳ Generating JWT token...');
         const token = jwt.sign(
             { id: user.id, email: user.email, name: user.name },
             JWT_SECRET,
@@ -177,6 +192,7 @@ app.post('/api/auth/register', async (req, res) => {
         );
 
         console.log('   ✅ Token generated');
+        console.log('   ⏳ Sending response...');
 
         res.status(201).json({
             success: true,
@@ -188,13 +204,22 @@ app.post('/api/auth/register', async (req, res) => {
             },
             token
         });
+        
+        console.log('   ✅ Response sent successfully!');
     } catch (error) {
-        console.error('❌ Ошибка регистрации:', error);
+        console.error('❌❌❌ CRITICAL ERROR in registration:');
+        console.error('   Error type:', error.constructor.name);
+        console.error('   Message:', error.message);
         console.error('   Stack:', error.stack);
+        console.error('   Full error:', JSON.stringify(error, Object.getOwnPropertyNames(error)));
+        
+        console.error('   ⏳ Sending error response...');
         res.status(500).json({ 
             error: error.message,
-            details: error.toString()
+            details: error.toString(),
+            type: error.constructor.name
         });
+        console.error('   ✅ Error response sent');
     }
 });
 
@@ -527,12 +552,39 @@ app.post('/api/forum/posts/:id/replies', verifyToken, async (req, res) => {
 // HEALTH CHECK
 // ========================================
 
-app.get('/health', (req, res) => {
-    res.json({
-        status: 'ok',
-        timestamp: new Date().toISOString(),
-        uptime: process.uptime()
-    });
+app.get('/health', async (req, res) => {
+    console.log('🏥 Health check request');
+    try {
+        // Проверяем Supabase
+        console.log('   ⏳ Testing Supabase connection...');
+        const { data, error } = await supabase.from('users').select('id').limit(1);
+        
+        if (error) {
+            console.log('   ❌ Supabase error:', error.message);
+            return res.status(503).json({
+                status: 'error',
+                message: 'Supabase connection failed',
+                error: error.message,
+                timestamp: new Date().toISOString()
+            });
+        }
+        
+        console.log('   ✅ Supabase OK');
+        res.json({
+            status: 'healthy',
+            timestamp: new Date().toISOString(),
+            uptime: process.uptime(),
+            supabase: 'connected',
+            version: '1.0.0'
+        });
+    } catch (error) {
+        console.error('   ❌ Health check failed:', error.message);
+        res.status(503).json({
+            status: 'error',
+            message: error.message,
+            timestamp: new Date().toISOString()
+        });
+    }
 });
 
 // ========================================
