@@ -28,15 +28,47 @@ class AuthManager {
     async restoreSession() {
         const token = localStorage.getItem('auth_token');
         const userId = localStorage.getItem('user_id');
+        const currentUser = localStorage.getItem(this.currentUserKey);
         
+        console.log('🔄 Restoring session...', { token: !!token, userId, currentUser: !!currentUser });
+        
+        // Если есть сохранённый пользователь в localStorage - используем его
+        if (currentUser) {
+            try {
+                const user = JSON.parse(currentUser);
+                console.log('✅ User restored from localStorage:', user.name);
+                
+                // Если есть токен - пытаемся обновить данные с сервера
+                if (token && userId) {
+                    this.api.setToken(token);
+                    try {
+                        const freshUser = await this.api.getUser(userId);
+                        console.log('✅ User data updated from server');
+                        localStorage.setItem(this.currentUserKey, JSON.stringify(freshUser));
+                    } catch (error) {
+                        console.warn('⚠️ Could not update user from server, using cached:', error.message);
+                        // Используем кэшированного пользователя
+                    }
+                }
+                return;
+            } catch (e) {
+                console.error('❌ Error parsing cached user:', e);
+            }
+        }
+        
+        // Если нет кэша но есть токен - пытаемся загрузить с сервера
         if (token && userId) {
             this.api.setToken(token);
             try {
                 const user = await this.api.getUser(userId);
+                console.log('✅ User loaded from server:', user.name);
                 localStorage.setItem(this.currentUserKey, JSON.stringify(user));
             } catch (error) {
-                console.warn('Session expired:', error);
-                this.logout();
+                console.warn('⚠️ Session expired or invalid:', error.message);
+                // Не вызываем logout() автоматически - пусть пользователь решит
+                // Просто очищаем токены
+                localStorage.removeItem('auth_token');
+                localStorage.removeItem('user_id');
             }
         }
     }
@@ -308,13 +340,55 @@ class AuthManager {
         // Обработчики форм
         const loginSubmit = document.getElementById('loginSubmit');
         const registerSubmit = document.getElementById('registerSubmit');
+        const loginEmail = document.getElementById('loginEmail');
+        const loginPassword = document.getElementById('loginPassword');
+        const registerName = document.getElementById('registerName');
+        const registerEmail = document.getElementById('registerEmail');
+        const registerPassword = document.getElementById('registerPassword');
+        const registerPasswordConfirm = document.getElementById('registerPasswordConfirm');
 
         if (loginSubmit) {
-            loginSubmit.addEventListener('click', () => this.handleLogin());
+            loginSubmit.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Login button clicked');
+                this.handleLogin();
+            });
+        }
+
+        // Добавляем обработчик Enter для логина
+        if (loginEmail && loginPassword) {
+            const handleLoginEnter = (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    this.handleLogin();
+                }
+            };
+            loginEmail.addEventListener('keypress', handleLoginEnter);
+            loginPassword.addEventListener('keypress', handleLoginEnter);
         }
 
         if (registerSubmit) {
-            registerSubmit.addEventListener('click', () => this.handleRegister());
+            registerSubmit.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Register button clicked');
+                this.handleRegister();
+            });
+        }
+
+        // Добавляем обработчик Enter для регистрации
+        if (registerName && registerEmail && registerPassword && registerPasswordConfirm) {
+            const handleRegisterEnter = (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    this.handleRegister();
+                }
+            };
+            registerName.addEventListener('keypress', handleRegisterEnter);
+            registerEmail.addEventListener('keypress', handleRegisterEnter);
+            registerPassword.addEventListener('keypress', handleRegisterEnter);
+            registerPasswordConfirm.addEventListener('keypress', handleRegisterEnter);
         }
 
         // Закрытие модального окна
@@ -359,8 +433,15 @@ class AuthManager {
         // Обновляем профиль если на странице профиля
         if (window.location.pathname.includes('profile.html')) {
             const currentUser = this.getCurrentUser();
+            console.log('📄 On profile page, user:', currentUser?.name);
+            
+            // Если пользователь не авторизирован - перенаправляем на главную
             if (!currentUser) {
-                window.location.href = 'index.html';
+                console.warn('⚠️ User not authorized on profile page, redirecting...');
+                // Добавляем небольшую задержку чтобы пользователь мог увидеть сообщение
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1000);
             }
         }
     }
