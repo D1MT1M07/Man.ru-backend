@@ -254,6 +254,12 @@ class APIClient {
         return item.value;
     }
 
+    // ========== STATISTICS ==========
+
+    async getStats() {
+        return this.request('GET', '/stats');
+    }
+
     clearCache() {
         this.cache.clear();
     }

@@ -29,17 +29,61 @@ class IndexPageManager {
         });
     }
 
-    updateSiteStats() {
+    async updateSiteStats() {
         try {
-            // Получаем количество пользователей
+            // Пытаемся получить статистику с сервера
+            console.log('📊 Loading statistics from server...');
+            
+            if (typeof api !== 'undefined' && api && typeof api.getStats === 'function') {
+                try {
+                    const stats = await api.getStats();
+                    console.log('✅ Statistics loaded from server:', stats);
+                    
+                    const usersCount = stats.users || 0;
+                    const articlesCount = stats.articles || 0;
+                    const postsCount = stats.discussions || 0;
+
+                    // Форматируем числа для красивого отображения
+                    const formatNumber = (num) => {
+                        if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+                        if (num >= 1000) return (num / 1000).toFixed(0) + 'K';
+                        return num.toString();
+                    };
+
+                    // Обновляем значения в HTML
+                    const usersElement = document.getElementById('statsUsers');
+                    const articlesElement = document.getElementById('statsArticles');
+                    const discussionsElement = document.getElementById('statsDiscussions');
+
+                    if (usersElement) {
+                        usersElement.textContent = formatNumber(usersCount);
+                    }
+                    if (articlesElement) {
+                        articlesElement.textContent = formatNumber(articlesCount);
+                    }
+                    if (discussionsElement) {
+                        discussionsElement.textContent = formatNumber(postsCount);
+                    }
+                    
+                    console.log('✅ Statistics updated from server:', { 
+                        users: usersCount, 
+                        articles: articlesCount, 
+                        discussions: postsCount 
+                    });
+                    return;
+                } catch (serverError) {
+                    console.warn('⚠️ Could not load statistics from server:', serverError.message);
+                }
+            }
+
+            // Fallback: используем localStorage если сервер недоступен
+            console.log('📦 Using localStorage as fallback...');
             const users = JSON.parse(localStorage.getItem(this.usersKey)) || [];
             const usersCount = users.length;
 
-            // Получаем количество статей
             const articles = JSON.parse(localStorage.getItem(this.articlesKey)) || [];
             const articlesCount = articles.length;
 
-            // Получаем количество обсуждений (постов форума)
             const posts = JSON.parse(localStorage.getItem(this.postsKey)) || [];
             const postsCount = posts.length;
 
@@ -65,14 +109,13 @@ class IndexPageManager {
                 discussionsElement.textContent = formatNumber(postsCount);
             }
             
-            // Логирование для отладки (только в разработке)
-            console.log('📊 Статистика обновлена:', { 
+            console.log('✅ Statistics updated from localStorage:', { 
                 users: usersCount, 
                 articles: articlesCount, 
                 discussions: postsCount 
             });
         } catch (error) {
-            console.error('❌ Ошибка при обновлении статистики:', error);
+            console.error('❌ Error updating statistics:', error);
         }
     }
 

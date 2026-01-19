@@ -674,6 +674,57 @@ app.use((req, res) => {
 });
 
 // ========================================
+// STATISTICS ENDPOINT
+// ========================================
+
+app.get('/api/stats', async (req, res) => {
+    try {
+        console.log('📊 Getting site statistics...');
+
+        // Получаем количество пользователей
+        const { count: usersCount, error: usersError } = await supabase
+            .from('users')
+            .select('*', { count: 'exact', head: true });
+
+        if (usersError) throw usersError;
+
+        // Получаем количество статей
+        const { count: articlesCount, error: articlesError } = await supabase
+            .from('articles')
+            .select('*', { count: 'exact', head: true });
+
+        if (articlesError) throw articlesError;
+
+        // Получаем количество постов на форуме
+        const { count: forumPostsCount, error: forumError } = await supabase
+            .from('forum_posts')
+            .select('*', { count: 'exact', head: true });
+
+        if (forumError) throw forumError;
+
+        const stats = {
+            users: usersCount || 0,
+            articles: articlesCount || 0,
+            discussions: forumPostsCount || 0
+        };
+
+        console.log('✅ Statistics retrieved:', stats);
+
+        res.json(stats);
+    } catch (error) {
+        console.error('❌ Error getting statistics:', error.message);
+        res.status(500).json({
+            error: error.message,
+            stats: {
+                users: 0,
+                articles: 0,
+                discussions: 0
+            }
+        });
+    }
+});
+
+// ========================================
 // ERROR HANDLER
 // ========================================
 
