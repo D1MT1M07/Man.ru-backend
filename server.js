@@ -652,27 +652,6 @@ app.get('/health', async (req, res) => {
 });
 
 // ========================================
-// 404 HANDLER - SERVE INDEX.HTML FOR SPA
-// ========================================
-
-console.log('📍 All routes registered, setting up 404 handler');
-
-app.use((req, res) => {
-    // Если запрос не на API и не на статический файл, отправляем index.html
-    console.log(`🚫 404 Handler: ${req.method} ${req.path}`);
-    
-    if (!req.path.startsWith('/api')) {
-        console.log(`   → SPA routing, sending index.html`);
-        res.sendFile(path.join(__dirname, 'index.html'));
-    } else {
-        console.log(`   → API route not found, returning 404`);
-        res.status(404).json({
-            error: 'Route not found',
-            path: req.path
-        });
-    }
-});
-
 // ========================================
 // STATISTICS ENDPOINT
 // ========================================
@@ -720,6 +699,28 @@ app.get('/api/stats', async (req, res) => {
                 articles: 0,
                 discussions: 0
             }
+        });
+    }
+});
+
+// ========================================
+// 404 HANDLER - SERVE INDEX.HTML FOR SPA
+// ========================================
+
+console.log('📍 All routes registered, setting up 404 handler');
+
+app.use((req, res) => {
+    // Если запрос не на API и не на статический файл, отправляем index.html
+    console.log(`🚫 404 Handler: ${req.method} ${req.path}`);
+    
+    if (!req.path.startsWith('/api')) {
+        console.log(`   → SPA routing, sending index.html`);
+        res.sendFile(path.join(__dirname, 'index.html'));
+    } else {
+        console.log(`   → API route not found, returning 404`);
+        res.status(404).json({
+            error: 'Route not found',
+            path: req.path
         });
     }
 });
