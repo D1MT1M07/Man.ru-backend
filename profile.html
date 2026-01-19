@@ -791,8 +791,50 @@
                 // Обработчик кнопки сохранения
                 const saveBtn = document.getElementById('saveProfileBtn');
                 if (saveBtn) {
-                    saveBtn.addEventListener('click', () => {
-                        self.saveProfile(currentUser.email, uploadedPhotoDataUrl);
+                    saveBtn.addEventListener('click', async () => {
+                        try {
+                            let avatar = uploadedPhotoDataUrl || document.getElementById('editAvatar').value || '👤';
+                            const name = document.getElementById('editName').value.trim();
+                            const birthDate = document.getElementById('editBirthDate').value || null;
+                            const bio = document.getElementById('editBio').value.trim();
+                            
+                            if (!name) {
+                                alert('❌ Введите никнейм');
+                                return;
+                            }
+                            
+                            console.log('📤 Отправляем обновление профиля на сервер...', { name, bio });
+                            
+                            // Используем APIClient для обновления профиля
+                            const api = new APIClient();
+                            const result = await api.updateUser(currentUser.id, {
+                                name: name,
+                                bio: bio,
+                                avatar: avatar
+                            });
+                            
+                            console.log('✅ Профиль успешно обновлён:', result);
+                            
+                            // Обновляем текущего пользователя в localStorage
+                            const updatedUser = { ...currentUser, name, bio, avatar };
+                            localStorage.setItem('man_ru_current_user', JSON.stringify(updatedUser));
+                            
+                            // Закрываем модальное окно
+                            const modal = document.getElementById('editProfileModal');
+                            if (modal) {
+                                modal.remove();
+                            }
+                            
+                            alert('✅ Профиль успешно обновлён!');
+                            
+                            // Перезагружаем данные профиля
+                            self.displayUserInfo(updatedUser);
+                            self.loadProfileData();
+                            
+                        } catch (error) {
+                            console.error('❌ Ошибка при сохранении профиля:', error);
+                            alert(`❌ Ошибка: ${error.message}`);
+                        }
                     });
                 }
             }
@@ -837,57 +879,6 @@
                     return reply;
                 });
                 localStorage.setItem('man_ru_forum_replies', JSON.stringify(replies));
-            }
-
-            saveProfile(email, uploadedPhotoDataUrl = null) {
-                let avatar = uploadedPhotoDataUrl || document.getElementById('editAvatar').value || '👤';
-                const name = document.getElementById('editName').value.trim();
-                const birthDate = document.getElementById('editBirthDate').value;
-                const bio = document.getElementById('editBio').value.trim();
-                
-                if (!name) {
-                    alert('Введите никнейм');
-                    return;
-                }
-                
-                const users = JSON.parse(localStorage.getItem(this.usersKey)) || [];
-                const userIndex = users.findIndex(u => u.email === email);
-                
-                if (userIndex !== -1) {
-                    const oldName = users[userIndex].name;
-                    
-                    // Обновляем имя везде, если имя изменилось
-                    if (oldName !== name) {
-                        this.updateAuthorNameEverywhere(oldName, name, email);
-                    }
-                    
-                    users[userIndex].avatar = avatar;
-                    users[userIndex].name = name;
-                    users[userIndex].birthDate = birthDate;
-                    users[userIndex].bio = bio;
-                    
-                    localStorage.setItem(this.usersKey, JSON.stringify(users));
-                    
-                    // Обновляем текущего пользователя со всеми полями
-                    const currentUser = JSON.parse(localStorage.getItem(this.currentUserKey));
-                    currentUser.name = name;
-                    currentUser.avatar = avatar;
-                    currentUser.birthDate = birthDate;
-                    currentUser.bio = bio;
-                    currentUser.followers = users[userIndex].followers || [];
-                    currentUser.following = users[userIndex].following || [];
-                    localStorage.setItem(this.currentUserKey, JSON.stringify(currentUser));
-                    
-                    // Закрываем модальное окно
-                    const modal = document.getElementById('editProfileModal');
-                    if (modal) {
-                        modal.remove();
-                    }
-                    
-                    this.displayUserInfo(currentUser);
-                    this.loadProfileData();
-                    alert('✅ Профиль обновлён!');
-                }
             }
         }
 

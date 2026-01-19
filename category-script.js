@@ -14,7 +14,7 @@ class CategoryPageManager {
         this.setupModalHandlers();
         this.setupMenuToggle();
         this.setupNewsletter();
-        this.renderArticles();
+        this.loadArticlesFromServer(); // Загружаем статьи с сервера
         this.renderCategoryTrends();
         this.setupArticleClickHandlers();
     }
@@ -74,13 +74,12 @@ class CategoryPageManager {
     }
 
     // ADD ARTICLE
-    addArticle() {
+    async addArticle() {
         const title = document.getElementById('articleTitle').value.trim();
         const description = document.getElementById('articleDescription').value.trim();
         
         // Get current user
         const currentUser = JSON.parse(localStorage.getItem('man_ru_current_user'));
-        const author = currentUser ? currentUser.name : (document.getElementById('articleAuthor')?.value || 'Аноним');
 
         if (!title) {
             this.showNotification('❌ Пожалуйста, введите заголовок статьи', 'error');
@@ -92,37 +91,59 @@ class CategoryPageManager {
             return;
         }
 
-        const articles = JSON.parse(localStorage.getItem(this.articlesKey)) || [];
-        
-        const newArticle = {
-            id: Date.now(),
-            title: title,
-            description: description,
-            content: description,
-            author: author,
-            authorEmail: currentUser ? currentUser.email : 'anonymous',
-            authorId: currentUser ? currentUser.id : null,
-            category: this.category,
-            date: new Date().toLocaleString('ru-RU'),
-            views: 0
-        };
+        if (!currentUser) {
+            this.showNotification('❌ Вы должны быть авторизованы', 'error');
+            return;
+        }
 
-        articles.push(newArticle);
-        localStorage.setItem(this.articlesKey, JSON.stringify(articles));
+        try {
+            console.log('📤 Отправляем статью на сервер...', { title, description, category: this.category });
+            
+            // Используем APIClient для отправки статьи
+            const api = new APIClient();
+            const result = await api.createArticle({
+                title: title,
+                description: description,
+                category: this.category
+            });
 
-        const modal = document.getElementById('addArticleModal');
-        modal.classList.remove('active');
-        document.body.style.overflow = 'auto';
+            console.log('✅ Статья успешно сохранена в БД:', result);
 
-        document.getElementById('articleForm').reset();
-        this.showNotification('✅ Статья успешно добавлена!');
-        this.renderArticles();
-        this.renderCategoryTrends();
-        
-        // Обновляем статистику на главной странице
-        if (window.indexPageManager) {
-            window.indexPageManager.updateSiteStats();
-            window.indexPageManager.renderTrendingArticles();
+            const modal = document.getElementById('addArticleModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+
+            document.getElementById('articleForm').reset();
+            this.showNotification('✅ Статья успешно добавлена и сохранена в базе данных!');
+            
+            // Загружаем статьи с сервера
+            this.loadArticlesFromServer();
+            
+        } catch (error) {
+            console.error('❌ Ошибка при сохранении статьи:', error);
+            this.showNotification(`❌ Ошибка: ${error.message}`, 'error');
+        }
+    }
+
+    // LOAD ARTICLES FROM SERVER
+    async loadArticlesFromServer() {
+        try {
+            console.log('📥 Загружаем статьи с сервера для категории:', this.category);
+            const api = new APIClient();
+            const articles = await api.getArticles(this.category);
+            
+            console.log('✅ Статьи загружены с сервера:', articles);
+            
+            // Сохраняем в localStorage для быстрого доступа
+            localStorage.setItem(this.articlesKey, JSON.stringify(articles));
+            
+            // Перерисовываем статьи на странице
+            this.renderArticles();
+            this.renderCategoryTrends();
+        } catch (error) {
+            console.error('❌ Ошибка загрузки статей с сервера:', error);
+            // Показываем сохраненные локально статьи если есть
+            this.renderArticles();
         }
     }
 

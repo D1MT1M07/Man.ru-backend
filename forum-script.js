@@ -12,7 +12,7 @@ class ForumPageManager {
         this.initializeDefaultPosts();
         this.setupModalHandlers();
         this.setupMenuToggle();
-        this.renderForumPosts();
+        this.loadForumPostsFromServer(); // Загружаем посты с сервера
         this.renderTopUsers();
         this.setupForumPostClickHandlers();
     }
@@ -136,7 +136,7 @@ class ForumPageManager {
     }
 
     // Create post
-    createPost() {
+    async createPost() {
         const title = document.getElementById('postTitle').value.trim();
         const categoryElement = document.getElementById('postCategory');
         const category = categoryElement ? categoryElement.value.trim() : '';
@@ -144,7 +144,6 @@ class ForumPageManager {
         
         // Get current user
         const currentUser = JSON.parse(localStorage.getItem('man_ru_current_user'));
-        const author = currentUser ? currentUser.name : (document.getElementById('postAuthor')?.value || 'Аноним');
 
         // Валидация с более понятными сообщениями об ошибках
         if (!title) {
@@ -162,38 +161,39 @@ class ForumPageManager {
             return;
         }
 
-        const posts = JSON.parse(localStorage.getItem(this.postsKey)) || [];
-        
-        const newPost = {
-            id: Date.now(),
-            title: title,
-            category: category,
-            message: message,
-            content: message,
-            description: message,
-            author: author,
-            authorEmail: currentUser ? currentUser.email : 'anonymous',
-            authorId: currentUser ? currentUser.id : null,
-            date: new Date().toLocaleString('ru-RU'),
-            comments: 0
-        };
-
-        posts.push(newPost);
-        localStorage.setItem(this.postsKey, JSON.stringify(posts));
-
-        const modal = document.getElementById('createPostModal');
-        modal.classList.remove('active');
-        document.body.style.overflow = 'auto';
-
-        document.getElementById('createPostForm').reset();
-        this.showNotification('✅ Тема успешно создана!');
-        this.renderForumPosts();
-        
-        // Обновляем статистику на главной странице
-        if (window.indexPageManager) {
-            window.indexPageManager.updateSiteStats();
+        if (!currentUser) {
+            this.showNotification('❌ Вы должны быть авторизованы', 'error');
+            return;
         }
-        this.renderTopUsers();
+
+        try {
+            console.log('📤 Отправляем пост на форум на сервер...', { title, category, message });
+            
+            // Используем APIClient для отправки поста
+            const api = new APIClient();
+            const result = await api.createForumPost({
+                title: title,
+                category: category,
+                message: message
+            });
+
+            console.log('✅ Пост успешно сохранен в БД:', result);
+
+            const modal = document.getElementById('createPostModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+
+            document.getElementById('createPostForm').reset();
+            this.showNotification('✅ Тема успешно создана и сохранена в базе данных!');
+            
+            // Загружаем посты с сервера
+            this.loadForumPostsFromServer();
+            this.renderTopUsers();
+            
+        } catch (error) {
+            console.error('❌ Ошибка при сохранении поста:', error);
+            this.showNotification(`❌ Ошибка: ${error.message}`, 'error');
+        }
     }
 
     renderTopUsers() {
@@ -279,6 +279,27 @@ class ForumPageManager {
                 </div>
             `;
         }).join('');
+    }
+
+    // LOAD FORUM POSTS FROM SERVER
+    async loadForumPostsFromServer() {
+        try {
+            console.log('📥 Загружаем посты форума с сервера...');
+            const api = new APIClient();
+            const posts = await api.getForumPosts();
+            
+            console.log('✅ Посты форума загружены с сервера:', posts);
+            
+            // Сохраняем в localStorage для быстрого доступа
+            localStorage.setItem(this.postsKey, JSON.stringify(posts));
+            
+            // Перерисовываем посты на странице
+            this.renderForumPosts();
+        } catch (error) {
+            console.error('❌ Ошибка загрузки постов с сервера:', error);
+            // Показываем сохраненные локально посты если есть
+            this.renderForumPosts();
+        }
     }
 
     // Render posts
@@ -424,7 +445,29 @@ class ForumPageManager {
         }
     }
 
-    loadForumReplies(postId) {
+    async loadForumReplies(postId) {
+        try {
+            console.log('📥 Загружаем ответы для поста', postId);
+            const api = new APIClient();
+            const replies = await api.getForumReplies(postId);
+            
+            console.log('✅ Ответы загружены с сервера:', replies);
+            
+            // Сохраняем в localStorage для быстрого доступа
+            const allReplies = JSON.parse(localStorage.getItem('man_ru_forum_replies')) || {};
+            allReplies[postId] = replies;
+            localStorage.setItem('man_ru_forum_replies', JSON.stringify(allReplies));
+            
+            // Перерисовываем ответы
+            this.renderForumReplies(postId);
+        } catch (error) {
+            console.error('❌ Ошибка загрузки ответов с сервера:', error);
+            // Показываем сохраненные локально ответы если есть
+            this.renderForumReplies(postId);
+        }
+    }
+
+    renderForumReplies(postId) {
         const repliesList = document.getElementById(`forum-replies-${postId}`);
         if (!repliesList) return;
 
@@ -439,7 +482,7 @@ class ForumPageManager {
 
         repliesList.innerHTML = replies.map(r => {
             // Get author avatar
-            const author = users.find(u => u.email === r.authorEmail);
+            const author = users.find(u => u.email === r.author_email || u.email === r.authorEmail);
             const avatar = author ? author.avatar : '👤';
             let avatarHTML = avatar;
             if (avatar && avatar.startsWith('data:')) {
@@ -448,54 +491,66 @@ class ForumPageManager {
                 avatarHTML = `<span style="font-size: 14px; margin-right: 2px;">${avatar}</span>`;
             }
             
+            const authorName = r.author || r.author_email;
+            const message = r.text || r.message;
+            const date = r.date || new Date().toLocaleString('ru-RU');
+            
             return `
             <div class="comment-item">
-                <strong style="display: flex; align-items: center;">${avatarHTML} ${r.author}</strong>
-                <div style="color: #666; font-size: 13px; margin-top: 5px;">${r.text}</div>
-                <div style="color: #999; font-size: 11px; margin-top: 5px;">${r.date}</div>
+                <strong style="display: flex; align-items: center;">${avatarHTML} ${authorName}</strong>
+                <div style="color: #666; font-size: 13px; margin-top: 5px;">${message}</div>
+                <div style="color: #999; font-size: 11px; margin-top: 5px;">${date}</div>
             </div>
         `}).join('');
     }
 
-    submitForumReply(postId) {
+    async submitForumReply(postId) {
         const input = document.getElementById(`forum-reply-${postId}`);
         if (!input || !input.value.trim()) {
-            alert('Напишите ответ!');
+            this.showNotification('❌ Напишите ответ!', 'error');
             return;
         }
 
         const text = input.value.trim();
         if (text.length < 5) {
-            alert('Минимум 5 символов');
+            this.showNotification('❌ Минимум 5 символов', 'error');
             return;
         }
 
         if (text.length > 500) {
-            alert('Максимум 500 символов');
+            this.showNotification('❌ Максимум 500 символов', 'error');
             return;
         }
 
-        const allReplies = JSON.parse(localStorage.getItem('man_ru_forum_replies')) || {};
-        if (!allReplies[postId]) allReplies[postId] = [];
-
         // Get current user
         const currentUser = JSON.parse(localStorage.getItem('man_ru_current_user'));
-        const author = currentUser ? currentUser.name : 'Аноним';
-        const authorEmail = currentUser ? currentUser.email : 'anonymous';
+        
+        if (!currentUser) {
+            this.showNotification('❌ Вы должны быть авторизованы', 'error');
+            return;
+        }
 
-        allReplies[postId].push({
-            author: author,
-            authorEmail: authorEmail,
-            text: text,
-            date: new Date().toLocaleString('ru-RU', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })
-        });
+        try {
+            console.log('📤 Отправляем ответ на форум на сервер...', { postId, message: text });
+            
+            // Используем APIClient для отправки ответа
+            const api = new APIClient();
+            const result = await api.createForumReply(postId, {
+                message: text
+            });
 
-        localStorage.setItem('man_ru_forum_replies', JSON.stringify(allReplies));
-        input.value = '';
-        this.loadForumReplies(postId);
+            console.log('✅ Ответ успешно сохранен в БД:', result);
 
-        // Показываем уведомление
-        this.showNotification('✅ Ответ добавлен!');
+            input.value = '';
+            this.showNotification('✅ Ответ добавлен и сохранен в базе данных!');
+            
+            // Загружаем ответы с сервера
+            this.loadForumReplies(postId);
+            
+        } catch (error) {
+            console.error('❌ Ошибка при сохранении ответа:', error);
+            this.showNotification(`❌ Ошибка: ${error.message}`, 'error');
+        }
     }
 
     setupForumPostClickHandlers() {
