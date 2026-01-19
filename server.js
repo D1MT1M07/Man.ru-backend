@@ -95,28 +95,49 @@ app.get('/', (req, res) => {
 // SUPABASE CONFIGURATION
 // ========================================
 
-const SUPABASE_URL = process.env.SUPABASE_URL || 'https://YOUR_PROJECT.supabase.co';
-const SUPABASE_KEY = process.env.SUPABASE_KEY || 'YOUR_ANON_KEY';
+const SUPABASE_URL = process.env.SUPABASE_URL || 'https://ljhmjfqxvgshkazpoody.supabase.co';
+const SUPABASE_KEY = process.env.SUPABASE_KEY || 'sb_publishable_u4LJ6le0y-XutIbsLMHoNg_5It98lgf';
 const JWT_SECRET = process.env.JWT_SECRET || 'your-super-secret-jwt-key-change-in-production';
 
-console.log('📋 Environment variables:');
-console.log(`   SUPABASE_URL: ${SUPABASE_URL.substring(0, 30)}...`);
-console.log(`   SUPABASE_KEY: ${SUPABASE_KEY.substring(0, 30)}...`);
-console.log(`   JWT_SECRET: ${JWT_SECRET.substring(0, 20)}...`);
+console.log('📋 Environment Variables Check:');
+console.log(`   SUPABASE_URL: ${SUPABASE_URL ? '✅ SET' : '❌ NOT SET'}`);
+if (SUPABASE_URL) {
+    console.log(`      Value: ${SUPABASE_URL.substring(0, 50)}...`);
+}
+console.log(`   SUPABASE_KEY: ${SUPABASE_KEY ? '✅ SET' : '❌ NOT SET'}`);
+if (SUPABASE_KEY) {
+    console.log(`      Length: ${SUPABASE_KEY.length} characters`);
+    console.log(`      Value: ${SUPABASE_KEY.substring(0, 30)}...`);
+}
+console.log(`   JWT_SECRET: ${JWT_SECRET ? '✅ SET' : '❌ NOT SET'}`);
+
+// Проверяем что переменные установлены
+if (!SUPABASE_URL || !SUPABASE_KEY) {
+    console.error('❌❌❌ CRITICAL: SUPABASE Environment Variables NOT SET!');
+    console.error('   SUPABASE_URL is:', SUPABASE_URL || 'undefined');
+    console.error('   SUPABASE_KEY is:', SUPABASE_KEY || 'undefined');
+    console.error('   You MUST set these on Render Dashboard!');
+    console.error('   Go to: Render Dashboard → Settings → Environment');
+    console.error('   Add:');
+    console.error('   SUPABASE_URL=https://ljhmjfqxvgshkazpoody.supabase.co');
+    console.error('   SUPABASE_KEY=your_key_from_supabase');
+    throw new Error('Missing required environment variables: SUPABASE_URL and/or SUPABASE_KEY');
+}
 
 let supabase;
 try {
     console.log('⏳ Creating Supabase client...');
+    console.log(`   Using URL: ${SUPABASE_URL}`);
+    console.log(`   Using KEY (length): ${SUPABASE_KEY.length}`);
+    
     supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
-    console.log('✅ Supabase client created');
-    console.log(`   URL: ${SUPABASE_URL}`);
-    console.log(`   Key length: ${SUPABASE_KEY.length}`);
+    console.log('✅✅✅ Supabase client created successfully!');
+    console.log(`   Database is now connected!`);
 } catch (error) {
     console.error('❌ ERROR creating Supabase client!');
     console.error('   Error:', error.message);
-    console.error('   Stack:', error.stack);
-    console.error('   This will cause ALL routes to fail!');
-    throw error; // Re-throw так чтобы сервис crash'ился и показал ошибку
+    console.error('   This is a CRITICAL error - registration will not work!');
+    throw error;
 }
 
 // ========================================
