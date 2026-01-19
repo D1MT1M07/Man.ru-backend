@@ -14,6 +14,28 @@ class APIClient {
         this.token = localStorage.getItem('auth_token');
         this.cache = new Map();
         this.cacheTimeout = 5 * 60 * 1000; // 5 минут
+        
+        // Автоматически проверяем health при инициализации
+        console.log('🏥 Initializing APIClient...');
+        console.log(`   Base URL: ${this.baseURL}`);
+        this.checkHealth();
+    }
+    
+    async checkHealth() {
+        try {
+            console.log('⏳ Checking backend health...');
+            const response = await fetch(`${this.baseURL.replace('/api', '')}/health`);
+            const data = await response.json();
+            console.log('✅ Backend is healthy:', data);
+        } catch (error) {
+            console.error('❌ Backend health check failed:', error.message);
+            console.error('   This means frontend cannot connect to backend!');
+            console.error('   Possible reasons:');
+            console.error('   1. Backend URL is wrong');
+            console.error('   2. Backend is not running');
+            console.error('   3. Network/CORS issue');
+            console.error('   4. Firewall blocking connection');
+        }
     }
 
     getAPIBaseURL() {
