@@ -58,8 +58,10 @@ class APIClient {
     }
 
     async request(method, endpoint, data = null) {
+        // Определяем url перед try чтобы она была доступна в catch
+        const url = `${this.baseURL}${endpoint}`;
+        
         try {
-            const url = `${this.baseURL}${endpoint}`;
             console.log(`🔗 API Request: ${method} ${url}`, data);
             console.log(`   Full URL: ${url}`);
             console.log(`   Headers:`, this.getHeaders());
