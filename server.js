@@ -431,7 +431,7 @@ app.post('/api/forum/posts', verifyToken, async (req, res) => {
                 author: req.user.name,
                 author_email: req.user.email,
                 author_id: req.user.id,
-                date: new Date().toLocaleString('ru-RU'),
+                date: new Date().toISOString(),
                 comments: 0,
                 created_at: new Date().toISOString()
             }])
@@ -517,7 +517,7 @@ app.post('/api/articles', verifyToken, async (req, res) => {
                 author: req.user.name,
                 author_email: req.user.email,
                 author_id: req.user.id,
-                date: new Date().toLocaleString('ru-RU'),
+                date: new Date().toISOString(),
                 views: 0,
                 created_at: new Date().toISOString()
             }])
@@ -594,7 +594,7 @@ app.post('/api/forum/posts/:id/replies', verifyToken, async (req, res) => {
                 author_email: req.user.email,
                 author_id: req.user.id,
                 message,
-                date: new Date().toLocaleString('ru-RU'),
+                date: new Date().toISOString(),
                 created_at: new Date().toISOString()
             }])
             .select()
