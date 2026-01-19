@@ -158,6 +158,43 @@ class AuthManager {
     }
 
     // ========================================
+    // DELETE PROFILE
+    // ========================================
+
+    async deleteProfile() {
+        const confirmed = confirm('⚠️ Вы уверены? Это действие необратимо и удалит ваш профиль.');
+        
+        if (!confirmed) {
+            return;
+        }
+
+        const doubleCheck = prompt('Введите "удалить" для подтверждения удаления профиля:');
+        
+        if (doubleCheck !== 'удалить') {
+            this.showNotification('❌ Удаление отменено', 'error');
+            return;
+        }
+
+        try {
+            const userId = localStorage.getItem('user_id');
+            if (!userId) {
+                this.showNotification('❌ Ошибка: пользователь не найден', 'error');
+                return;
+            }
+
+            console.log('🗑️ Deleting profile for user:', userId);
+            await this.api.deleteUser(userId);
+            
+            this.showNotification('✅ Ваш профиль удалён. До свидания!', 'success');
+            this.logout();
+            
+        } catch (error) {
+            console.error('❌ Delete error:', error);
+            this.showNotification(`❌ Ошибка удаления: ${error.message}`, 'error');
+        }
+    }
+
+    // ========================================
     // UI MANAGEMENT
     // ========================================
 
@@ -173,22 +210,58 @@ class AuthManager {
         if (currentUser) {
             // Пользователь вошел
             authContainer.innerHTML = `
-                <button class="auth-btn" id="userMenuBtn" style="cursor: pointer;">
-                    👤 ${currentUser.name}
-                </button>
+                <div class="user-menu-wrapper">
+                    <button class="auth-btn" id="userMenuBtn" style="cursor: pointer;">
+                        👤 ${currentUser.name}
+                    </button>
+                    <div class="user-dropdown-menu" id="userMenu">
+                        <a href="profile.html" class="user-menu-item">👤 Профиль</a>
+                        <button class="user-menu-item delete-btn" id="deleteProfileBtn">🗑️ Удалить профиль</button>
+                        <button class="user-menu-item logout-btn" id="logoutBtn">🚪 Выход</button>
+                    </div>
+                </div>
             `;
             
             const userMenuBtn = document.getElementById('userMenuBtn');
+            const deleteProfileBtn = document.getElementById('deleteProfileBtn');
+            const logoutBtn = document.getElementById('logoutBtn');
+
             if (userMenuBtn) {
                 userMenuBtn.addEventListener('click', (e) => {
                     e.preventDefault();
                     e.stopPropagation();
                     const menu = document.getElementById('userMenu');
                     if (menu) {
-                        menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+                        menu.classList.toggle('active');
                     }
                 });
             }
+
+            if (deleteProfileBtn) {
+                deleteProfileBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    this.deleteProfile();
+                });
+            }
+
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    this.logout();
+                });
+            }
+
+            // Закрытие меню при клике вне меню
+            document.addEventListener('click', (e) => {
+                const menu = document.getElementById('userMenu');
+                const menuBtn = document.getElementById('userMenuBtn');
+                if (menu && menuBtn && !menu.contains(e.target) && e.target !== menuBtn) {
+                    menu.classList.remove('active');
+                }
+            });
+
         } else {
             // Пользователь не вошел
             authContainer.innerHTML = `

@@ -204,6 +204,92 @@ body {
     box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
 }
 
+/* ========== USER DROPDOWN MENU ========== */
+
+.user-menu-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.user-dropdown-menu {
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    background: rgba(15, 23, 42, 0.95);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    min-width: 220px;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+    animation: slideDown 0.3s ease;
+}
+
+.user-dropdown-menu.active {
+    display: block;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.user-menu-item {
+    display: block;
+    width: 100%;
+    padding: 14px 18px;
+    border: none;
+    background: none;
+    color: #e2e8f0;
+    text-align: left;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+
+.user-menu-item:first-child {
+    border-radius: 12px 12px 0 0;
+}
+
+.user-menu-item:last-child {
+    border-radius: 0 0 12px 12px;
+}
+
+.user-menu-item:hover {
+    background: rgba(99, 102, 241, 0.2);
+    color: #fff;
+    padding-left: 22px;
+}
+
+.user-menu-item.delete-btn {
+    color: #fca5a5;
+    border-top: 1px solid rgba(99, 102, 241, 0.2);
+}
+
+.user-menu-item.delete-btn:hover {
+    background: rgba(239, 68, 68, 0.2);
+    color: #fecaca;
+}
+
+.user-menu-item.logout-btn {
+    color: #fca5a5;
+    border-top: 1px solid rgba(99, 102, 241, 0.2);
+}
+
+.user-menu-item.logout-btn:hover {
+    background: rgba(239, 68, 68, 0.2);
+    color: #fecaca;
+}
+
 /* Navigation */
 
 .header__nav {

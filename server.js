@@ -357,6 +357,33 @@ app.put('/api/users/:id', verifyToken, async (req, res) => {
     }
 });
 
+// ========== DELETE USER PROFILE ==========
+
+app.delete('/api/users/:id', verifyToken, async (req, res) => {
+    try {
+        if (req.user.id !== parseInt(req.params.id)) {
+            return res.status(403).json({ error: 'Unauthorized' });
+        }
+
+        console.log(`🗑️ Deleting user profile: ${req.params.id}`);
+
+        const { error } = await supabase
+            .from('users')
+            .delete()
+            .eq('id', req.params.id);
+
+        if (error) throw error;
+
+        res.json({
+            success: true,
+            message: 'Профиль успешно удалён'
+        });
+    } catch (error) {
+        console.error('❌ Ошибка удаления профиля:', error.message);
+        res.status(500).json({ error: error.message });
+    }
+});
+
 // ========================================
 // ROUTES - ФОРУМ
 // ========================================

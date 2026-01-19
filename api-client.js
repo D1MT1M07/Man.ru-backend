@@ -189,6 +189,10 @@ class APIClient {
         return this.request('PUT', `/users/${id}`, data);
     }
 
+    async deleteUser(id) {
+        return this.request('DELETE', `/users/${id}`);
+    }
+
     // ========== СТАТЬИ ==========
 
     async getArticles(category = null) {
